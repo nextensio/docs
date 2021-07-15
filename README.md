@@ -1,6 +1,7 @@
-# Docsy with "just docs"
+To see the docs UI,
 
-This is an example customization of the [Docsy Example Project](https://github.com/google/docsy-example) that just has a docs section, rather than a full site.
-It's hosted at https://docsyjustdocs.netlify.com/
+1. docker-compose build (you might have to install docker-compose)
+2. docker-compose up
+3. Open your web browser and type http://localhost:1313
 
-You can learn more about Docsy and find detailed theme instructions in the Docsy user guide: https://docsy.dev/docs/
+The UI will automatically update itself when you update the docs
