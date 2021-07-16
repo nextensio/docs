@@ -54,9 +54,9 @@ Add user             |  Download user agent image
 :-------------------------:|:-------------------------:
 ![](/architecture/user_add.jpg) | ![](/architecture/images.jpg)
 
-For initial bootstrapping, the comment about "You have no attributes for users" can be ignored, we will
-talk about attributes in the next topic. Also note that the first admin user who signed up will automatically
-show up in the users list.
+For initial bootstrapping, the comment about "You have no attributes for users" can be ignored, 
+it will be explained in more detail in section [Policies and Attributes](/policyattr). Also note 
+that the first admin user who signed up will automatically show up in the users list.
 
 ### STEP3: Create AppGroups 
 
@@ -73,8 +73,8 @@ Add AppGroup
 :-------------------------:
 ![](/architecture/appgroup_add.jpg)
 
-For initial bootstrapping, the comment about "You have no attributes for AppGroup" can be ignored, we will
-talk about attributes in the next topic
+For initial bootstrapping, the comment about "You have no attributes for AppGroup" can be ignored, it will be 
+explained in more detail in section [Policies and Attributes](/policyattr)
 
 * The Appgroup ID is an email id. 
 * The Appgroup Name is just a descriptive string
@@ -93,9 +93,13 @@ by engineering department, but appx is to be accessibly only by managers. Such p
 in controller.nextensio.net for each of the host/service URLs, at the least create an entry with no properties 
 defined, properties can be added/modified later.
 
-Add AppGroup             
+Add Hosts             
 :-------------------------:
-![](/architecture/appgroup_add.jpg)
+![](/architecture/host_add.jpg)
+
+So in the above page, we would add TWO hosts - appx.awesomecustomer.com and appx.awesomecustomer.com - all the
+attributes and tags etc.. can be just left alone, thats sufficient for bootstrapping, it will be explained in
+more detail in section [Policies and Attributes](/policyattr)
 
 ### STEP5: Run connector in data center
 
