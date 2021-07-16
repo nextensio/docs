@@ -1,5 +1,8 @@
 image: registry.gitlab.com/pages/hugo/hugo_extended:latest
 
+before_script:
+  - npm install -g postcss-cli
+
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
