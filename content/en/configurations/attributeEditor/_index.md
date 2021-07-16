@@ -1,7 +1,7 @@
 
 ---
-title: "Table of Contents"
-linkTitle: "Table of Contents"
+title: "Attribute Editor"
+linkTitle: "Attribute Editor"
 weight: 20
 type: list
 menu:

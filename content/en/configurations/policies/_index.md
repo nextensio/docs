@@ -1,7 +1,7 @@
 
 ---
-title: "Table of Contents"
-linkTitle: "Table of Contents"
+title: "Policies"
+linkTitle: "Policies"
 weight: 20
 type: list
 menu:

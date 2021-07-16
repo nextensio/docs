@@ -1,7 +1,7 @@
 
 ---
-title: "Table of Contents"
-linkTitle: "Table of Contents"
+title: "AppGroups"
+linkTitle: "AppGroups"
 weight: 20
 type: list
 menu:

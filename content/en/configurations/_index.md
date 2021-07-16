@@ -1,7 +1,7 @@
 
 ---
-title: "Table of Contents"
-linkTitle: "Table of Contents"
+title: "Configurations"
+linkTitle: "Configurations"
 weight: 20
 type: list
 menu:
