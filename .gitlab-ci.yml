@@ -1,7 +1,7 @@
 image: registry.gitlab.com/pages/hugo/hugo_extended:latest
 
 before_script:
-  - apk update && apk add npm
+  - apk update && apk add npm git
   - npm install -g postcss-cli
   - npm install autoprefixer
 
