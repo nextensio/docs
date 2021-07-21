@@ -1,6 +1,6 @@
 ---
-title: "Attributes and Policies"
-linkTitle: "Attributes and Policies"
+title: "attributes and policies"
+linkTitle: "attributes and policies"
 weight: 10
 description: >
 ---
@@ -101,7 +101,7 @@ contain single value strings, numbers, booleans or multi value (arrays) of strin
 
 Attribute Editor             
 :-------------------------:
-![](/policyattr/attredit.jpg)
+![](/architecture/policyattr/attredit.jpg)
 
 The above picture shows the attribute editor populated with the attributes we discussed above, with
 the corresponding types (string, number). We do not have any example attribute that is multi-value (array),
@@ -113,19 +113,20 @@ value for the same attribute of course can be different for different users.
 ### Host Attributes
 
 We show below  adding the attributes required for the AWS/Digital ocean example for host
-appx.awesomecustomer.com
+appx.awesomecustomer.com. This section also needs an understanding of the [Routing](/architecture/routing)
+section to get a complete picture
 
 Add host             
 :-------------------------:
-![](/policyattr/host_add.jpg)
+![](/architecture/policyattr/host_add.jpg)
 
 Edit host             
 :-------------------------:
-![](/policyattr/host_edit.jpg)
+![](/architecture/policyattr/host_edit.jpg)
 
 Add attributes for tags             
 :-------------------------:
-![](/policyattr/hostattr_edit.jpg)
+![](/architecture/policyattr/hostattr_edit.jpg)
 
 Similarly we can add the second tag "do" with attribute employmentType set to "consultant"
 
@@ -133,7 +134,7 @@ Similarly we can add the second tag "do" with attribute employmentType set to "c
 
 Add/Modify attributes             
 :-------------------------:
-![](/policyattr/userattr_edit.jpg)
+![](/architecture/policyattr/userattr_edit.jpg)
 
 The picture shows the attributes we discussed in the examples above, added to the "admin" user
 
@@ -141,7 +142,7 @@ The picture shows the attributes we discussed in the examples above, added to th
 
 Add/Modify attributes             
 :-------------------------:
-![](/policyattr/appattr_edit.jpg)
+![](/architecture/policyattr/appattr_edit.jpg)
 
 The picture shows the attributes we discussed in the examples above, added to the "appxappy" appgroup
 
@@ -151,7 +152,7 @@ We saw snippets of how a nextensio policy is written in the above examples. The 
 is the Rego language which is getting fast industry acceptance and popularity as a simple intuitive and
 expressive policy language. The policies are configured in the picture shown below
 
-![](/policyattr/policy.jpg)
+![](/architecture/policyattr/policy.jpg)
 
 There can be multiple policies each used in a different context. Each policy has a name. The picture above
 shows two policies AccessPolicy and RoutePolicy. AccessPolicy is what controls all the "restrict appx/appy
@@ -170,3 +171,8 @@ Below we provide examples of template policies that can be cut + pasted and adap
 cover a lot of the common scenarios and should be useful in getting off the ground fast.
 
 TODO ASHWIN: pls fill this up
+
+## Next 
+
+Having understood attributes and policies, let us see how they are used in making routing decisions specifically -
+[Routing](/architecture/routing/)

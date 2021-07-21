@@ -80,6 +80,6 @@ the service based actions is nothing but a regular kubernetes service mesh - tha
 does anyways, service routing! While that is a reasonable first impression, that is far from
 an accurate picture, what we do is far more than kubernetes or any http mesh tecnology out
 there can do, for example we can have programmable/dynamic policies using Rego language. 
-To find out more, read our [Architecture](/architecture/) section
+To find out more, read our [Architecture](/architecture/onboarding) section
 
 
