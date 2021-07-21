@@ -24,4 +24,4 @@ customer's Identity Provider / LDAP and at that point the list of users can be
 exported from customer's Identity Provider instead of manually configuring here
 
 For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
-and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../attributeeditor.html) 
+and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 

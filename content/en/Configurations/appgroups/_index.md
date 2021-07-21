@@ -58,4 +58,4 @@ So we will enter pos.awesomecustomer.com,manuals.awesomecustomer.com. Basically,
 identify the applications in this appgroup
 
 For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
-and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../attributeeditor.html) 
+and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 

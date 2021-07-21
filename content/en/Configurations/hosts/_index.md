@@ -29,4 +29,4 @@ a seperate set of attributes. A tag is just any string, for details on how its u
 routing, refer [routing](/architecture/routing.html)
 
 For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
-and details about [configuring attribute editor](../attributeeditor.html) 
+and details about [configuring attribute editor](../configurations/attributeeditor.html) 
