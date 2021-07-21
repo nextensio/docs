@@ -11,6 +11,10 @@ menu:
 
 # Policy
 
+Policy Configuration             
+:-------------------------:
+![](/configurations/policies/policy.jpg)
+
 Nextensio policies are written in [Rego Language](https://www.openpolicyagent.org/docs/latest/policy-language/)
 
 There are two policies with names "RoutePolicy" and "AcessPolicy". The former controls

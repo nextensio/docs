@@ -11,6 +11,10 @@ menu:
 
 ## Attributes
 
+Attribute Editor
+:-------------------------:
+![](/configurations/attributeEditor/attredit.jpg)
+
 It will be useful to have an understanding of what attributes are and where its used
 etc.. as documented [here](/architecture/policyattr)
 
