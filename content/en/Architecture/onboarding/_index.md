@@ -55,7 +55,7 @@ Add user             |  Download user agent image
 ![](/architecture/onboarding/user_add.jpg) | ![](/architecture/onboarding/images.jpg)
 
 For initial bootstrapping, the comment about "You have no attributes for users" can be ignored, 
-it will be explained in more detail in section [Policies and Attributes](/architecture/policyattr). Also note 
+it will be explained in more detail in section [Policies and Attributes](/architecture/policyattr.html). Also note 
 that the first admin user who signed up will automatically show up in the users list.
 
 NOTE: Nextensio will soon support federation with customer's Identity Provider and then the user creation
@@ -77,7 +77,7 @@ Add AppGroup
 ![](/architecture/onboarding/appgroup_add.jpg)
 
 For initial bootstrapping, the comment about "You have no attributes for AppGroup" can be ignored, it will be 
-explained in more detail in section [Policies and Attributes](/architecture/policyattr)
+explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
 
 * The Appgroup ID is an email id. 
 * The Appgroup Name is just a descriptive string
@@ -102,7 +102,7 @@ Add Hosts
 
 So in the above page, we would add TWO hosts - appx.awesomecustomer.com and appx.awesomecustomer.com - all the
 attributes and tags etc.. can be just left alone, thats sufficient for bootstrapping, it will be explained in
-more detail in section [Policies and Attributes](/architecture/policyattr)
+more detail in section [Policies and Attributes](/architecture/policyattr.html)
 
 ### STEP5: Run connector in data center
 
@@ -171,4 +171,4 @@ restricted purely to customer's data center, there are no external ripple effect
 ## Next 
 
 Having got an introduction to what Nextensio does, let us see all the flexible policies that Nextensio
-provides a customer - [Policies and Attributes](/architecture/policyattr/)
+provides a customer - [Policies and Attributes](/architecture/policyattr.html)

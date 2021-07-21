@@ -26,7 +26,7 @@ Host routng config
 
 The example above shows a host defined with two "tags" - "aws" and "do", and each tag has
 a seperate set of attributes. A tag is just any string, for details on how its used in
-routing, refer [routing](/architecture/routing)
+routing, refer [routing](/architecture/routing.html)
 
-For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr) 
-and details about [configuring attribute editor](../attributeeditor/) 
+For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
+and details about [configuring attribute editor](../attributeeditor.html) 

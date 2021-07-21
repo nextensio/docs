@@ -16,7 +16,7 @@ Attribute Editor
 ![](/configurations/attributeEditor/attredit.jpg)
 
 It will be useful to have an understanding of what attributes are and where its used
-etc.. as documented [here](/architecture/policyattr)
+etc.. as documented [here](/architecture/policyattr.html)
 
 The attribute editor is purely defining / setting the ground rules for how many attributes
 are there, what are their names, who it applies to (User, AppGroup or Host) and what kind 

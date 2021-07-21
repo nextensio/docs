@@ -57,5 +57,5 @@ and usermanuals, identified by pos.awesomecustomer.com and manuals.awesomecustom
 So we will enter pos.awesomecustomer.com,manuals.awesomecustomer.com. Basically, the URLs 
 identify the applications in this appgroup
 
-For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr) 
-and [access control](/architecture/accesscontrol) details about [configuring attribute editor](../attributeeditor/) 
+For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
+and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../attributeeditor.html) 

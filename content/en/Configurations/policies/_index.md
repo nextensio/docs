@@ -18,7 +18,7 @@ Policy Configuration
 Nextensio policies are written in [Rego Language](https://www.openpolicyagent.org/docs/latest/policy-language/)
 
 There are two policies with names "RoutePolicy" and "AcessPolicy". The former controls
-[routing](/architecture/routing) and the latter controlls [access control](/architecture/accescontrol)
+[routing](/architecture/routing.html) and the latter controlls [access control](/architecture/accescontrol.html)
 
 TODO ASHWIN: Give some more details here as you feel appropriate. Also, now that I think of it, access 
 policies for different appgroups might be different right ? Each appgroup is a completely differen beast

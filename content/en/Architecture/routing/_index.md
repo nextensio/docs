@@ -7,7 +7,7 @@ description: >
 
 ## Same Service, multiple datacenters
 
-In the section on [Policies and Attributes](/architecture/policyattr), we talked
+In the section on [Policies and Attributes](/architecture/policyattr.html), we talked
 about an example service appx.awesomecustomer.com present in two different data
 centers AWS and Digital Ocean, and we talked about how we can use attributes to
 route users to one or the other data center using attribute match. We left out a
@@ -72,9 +72,9 @@ a specific appgroup that needs to be chosen for this traffic - we DO NOT  expect
 with those tags added. Customer will just host appx.awesomecustomer.com in BOTH amazon and digital ocean
 
 The exact details of how step2 does the "attribute match" is defined using policies as described in the
-section on [Policies](/architecture/attrpolicy)
+section on [Policies](/architecture/attrpolicy.html)
 
 ## Next 
 
 The next topic of interest will be how to control which user can access what resources, in 
-section [Access Control](/architecture/accesscontrol)
+section [Access Control](/architecture/accesscontrol.html)

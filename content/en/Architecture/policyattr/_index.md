@@ -8,7 +8,7 @@ description: >
 ## Attributes 
 
 Policies control everything in Nextensio. Lets look at some sample use cases, continuing with
-the awesomecustomer.com App-X and App-Y examples from the [Architecture](/architecture) section
+the awesomecustomer.com App-X and App-Y examples from the [Architecture](/architecture.html) section
 Once we run through the sample use cases, we will have a fair idea of what attributes and 
 policies are and how to use them. 
 
@@ -113,7 +113,7 @@ value for the same attribute of course can be different for different users.
 ### Host Attributes
 
 We show below  adding the attributes required for the AWS/Digital ocean example for host
-appx.awesomecustomer.com. This section also needs an understanding of the [Routing](/architecture/routing)
+appx.awesomecustomer.com. This section also needs an understanding of the [Routing](/architecture/routing.html)
 section to get a complete picture
 
 Add host             
@@ -175,4 +175,4 @@ TODO ASHWIN: pls fill this up
 ## Next 
 
 Having understood attributes and policies, let us see how they are used in making routing decisions specifically -
-[Routing](/architecture/routing/)
+[Routing](/architecture/routing.html)
