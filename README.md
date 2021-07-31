@@ -12,14 +12,24 @@ the content/en directory and the pictures that the docs uses are all in the stat
 directory. Some pictures have been generated from ppt files, those ppt files themseves
 are in ppts/ directory.
 
-To deploy this docs website to production, do the below
+To deploy this docs website to production (in AWS), do the below
 
 1. install hugo (google for instructions)
-2. npm install -g postcss-cli
-   npm install autoprefixer
-   npm audit fix
-3. Setup the aws credentials to use our aws account
+
+2. cd ~docs  (ensure you are in your docs repo)
+
+3. sudo npm install -g postcss-cli
+
+   sudo npm install autoprefixer
+   
+   sudo npm audit fix
+    
+4. Setup the aws credentials to use our aws account. This involves first downloading
+   the aws-cli (or awscli) and executing "aws configure". This command will prompt for
+   AWS Access Key ID, AWS Secret Key, Default Region name (use us-east-2) and
+   Default output format (use json).  You will need to have the Access and Secret keys
+   handy.
 
 The above steps are onetime only
 
-4. say "hugo --minify" and "hugo deploy"
+5. say "sudo hugo --minify" and "sudo hugo deploy"
