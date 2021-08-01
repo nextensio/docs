@@ -43,8 +43,8 @@ may or may not use AppGroup attributes as reference data, as mentioned above.
 
 Let's assume data center DCA is running engineering applications and data center DCB is running
 HR applications. We therefore want to restrict access to AppGroup-DCA to those in "engineering"
-team, and restrict access to AppGroup-DCB to users with the role of "managers" as well as users
-in the "hr" team. Note that the "engineering" team can have "managers" - they should be able to
+team, and restrict access to AppGroup-DCB to users with the role of "manager" as well as users
+in the "hr" team. Note that the "engineering" team can have "manager" - they should be able to
 access both data centers. For simplicity, we will assume that a user can be in just one team.
 Such a case gives the gist of a common use case that involves the need to restrict app usage
 to certain groups in an enterprise. This is how we would do it in nextensio.
@@ -68,6 +68,7 @@ this logic:
 "hr"		 "non-manager"	     deny	  allow
 "hr"		 "manager"	     deny	  allow
 <any-other-team> "manager"	     deny	  allow
+<any-other-team> "non-manager"	     deny	  deny
 ```
 
 Option 1 - without using AppGroup attributes
@@ -137,7 +138,10 @@ The use of AppGroup attributes as reference data may be considered for more comp
 policy written accordingly.
 
 
-#### Case 3: Routing to optimize data center cost
+### Routing control by host
+
+
+#### Case 1: Routing to optimize data center cost
 
 Lets say that DCA is in AWS and DCB in Digital Ocean and both data centers run the same applications.
 Assuming AWS is more expensive than digital ocean, the goal here is to minimize aws usage as much as
