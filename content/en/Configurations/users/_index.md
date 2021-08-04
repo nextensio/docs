@@ -44,7 +44,7 @@ access-control), it is recommended that changes be batched together and done onc
 for better controls and validations. Of course this is just a suggestion and it is up to the tenant
 to decide what works best for them.
 
-For addition of new attributes, deleting an attribute, or changung the name or type of an attribute,
+For addition of new attributes, deleting an attribute, or changing the name or type of an attribute,
 refer to the [Attribute Editor section](../configurations/attributeeditor.html) 
 
 
