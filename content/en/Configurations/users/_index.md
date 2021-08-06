@@ -9,6 +9,8 @@ menu:
     weight: 20
 ---
 
+Aug 5, 2021
+
 ## Users
 
 Users are the entities that deploy the nextensio Agent software and connect to the nextensio

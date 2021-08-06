@@ -9,6 +9,8 @@ menu:
     weight: 20
 ---
 
+Aug 5, 2021
+
 ## Attributes
 
 Note: "AppGroup ID" and connector will be used interchangeably as they represent the same entity.

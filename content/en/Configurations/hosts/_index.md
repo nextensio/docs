@@ -9,6 +9,8 @@ menu:
     weight: 20
 ---
 
+Aug 5, 2021
+
 ## Host information
 
 Hosts are the entities that users try to access. They represent the services deployed inside data
