@@ -32,4 +32,4 @@ To deploy this docs website to production (in AWS), do the below
 
 The above steps are onetime only
 
-5. say "sudo hugo --minify" and "sudo hugo deploy"
+5. say "sudo hugo --minify" and "hugo deploy"
