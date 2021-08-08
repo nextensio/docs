@@ -29,11 +29,11 @@ Nextensio has three types of policies:
 service - Route Policy
 * a policy for tracing user traffic flows - Trace Policy
 
-Each policy takes a user ID and the attributes for that user ID as input. These attributes are referred
-to using the "input." prefix to each user attribute name. For eg., if there is a single-value user
-attribute called userRole, it would be referred to as input.userRole within the policy. To refer to a
-multi-value user attribute called userTeam, one would use input.userTeam\[\_\] where \[\_\] refers to
-any value in userTeam.
+Each policy takes a user ID's attributes as input. These attributes are referred to using the
+"input.user." prefix to each user attribute name. For eg., if there is a single-value user
+attribute called userRole, it would be referred to as input.user.userRole within the policy.
+To refer to amulti-value user attribute called userTeam, one would use input.user.userTeam\[\_\]
+where \[\_\] refers to any value in userTeam.
 
 Note: a multi-value attribute cannot be referred to using the syntax for a single-value attribute or
 vice-versa.
@@ -43,7 +43,7 @@ using the index to refer to the attribute values, eg.,
 ```
 {
     some index
-    input.userTeam[index] ...
+    input.user.userTeam[index] ...
 }
 ```
 
@@ -142,7 +142,7 @@ A customer can decide to use a different name for the is_allowed variable, but t
 be returned at app.access.allow.
 
 As covered earlier in 'Policy overview', the user attributes and AppGroup ID received as input are
-referred to using input.\<attribute-name\> and input.bid.
+referred to using input.user.\<attribute-name\> and input.bid.
 So how does one access the Appgroup attribute values from the reference data file ?
 The Appgroup attributes file is an array of records for multiple AppGroup IDs. To refer to the
 i'th record which corresponds to some AppGroup ID, one needs to use data.bundles[i].
@@ -168,16 +168,16 @@ is_allowed {  # Rule2
 where a \<rule expression\> can be
 ```
     some i
-    input.userRole == data.bundles[i].RoleAllowed[_]
+    input.user.userRole == data.bundles[i].RoleAllowed[_]
 to match the userRole value to any value in roleAllowed, or
-    input.userTeam[_] == data.bundles[i].teamAllowed[_]
+    input.user.userTeam[_] == data.bundles[i].teamAllowed[_]
 to match every value in userTeam to any value in teamAllowed.
 ```
 ##### Key things to remember
 ```
 allow : where result of policy should be returned
 input.bid : Target Appgroup ID for user
-input.<attribute-name> : User attribute
+input.user.<attribute-name> : User attribute
 data.bundles[i].bid : AppGroup ID for a record in the reference data
 data.bundles[i].<attribute-name> : An attribute in an AppGroup ID record in the reference data
 ```
@@ -205,7 +205,7 @@ set route_tag = "deny" in order to block any user's access to a specific host.
 The result returned by the policy is accessed at user.routing.route_tag
 
 As covered earlier in 'Policy overview', the user attributes and host ID received as input are
-referred to using input.\<attribute-name\> and input.host.
+referred to using input.user.\<attribute-name\> and input.host.
 So how does one access the host attribute values from the reference data file ?
 The host attributes file is an array of records for multiple host IDs. However, each host ID can have
 an array of records for host route attributes. So we basically have an array of records within an array
@@ -251,16 +251,16 @@ route_tag = tag1 {  # Rule1
 A \<rule expression\> can be
 ```
     some i, j
-    input.userRole == data.hosts[i].routeattrs[j].RoleSelect[_]
+    input.user.userRole == data.hosts[i].routeattrs[j].RoleSelect[_]
 to match the userRole value to any value in roleSelect, or
-    input.userTeam[_] == data.hosts[i].routeattrs[j].teamSelect[_]
+    input.user.userTeam[_] == data.hosts[i].routeattrs[j].teamSelect[_]
 to match every value in userTeam to any value in teamSelect.
 ```
 ##### Key things to remember
 ```
 route_tag : where result of policy should be returned
 input.host : Target host ID for user
-input.<attribute-name> : User attribute
+input.user.<attribute-name> : User attribute
 data.hosts[i].host : Host ID from a record in the reference data
 data.hosts[i].routeattrs[j].<attribute-name> : An attribute in a host ID route attributes record in the reference data
 ```
@@ -289,7 +289,7 @@ inserted in the trace spans as a "nxt-trace-requestid: \<request\>" tag so that 
 be identified back to a specific trace request.
 
 As covered earlier in 'Policy overview', the user attributes received as input are referred to using
-input.\<attribute-name\>.
+input.user.\<attribute-name\>.
 So how does one access the trace request attribute values from the reference data file ?
 The trace request attributes file is an array of records for multiple trace request IDs. To refer to the
 i'th record which corresponds to some trace request ID, one needs to use data.tracerequests[i].
@@ -321,15 +321,15 @@ use the "else" facility as shown earlier.
 A \<rule expression\> can be
 ```
     some i
-    input.userRole == data.tracerequests[i].roleTraced[_]
+    input.user.userRole == data.tracerequests[i].roleTraced[_]
 to match the userRole value to any value in roleTraced, or
-    input.userTeam[_] == data.tracerequests[i].teamTraced[_]
+    input.user.userTeam[_] == data.tracerequests[i].teamTraced[_]
 to match every value in userTeam to any value in teamTraced.
 ```
 ##### Key things to remember
 ```
 request : where result of policy should be returned
-input.<attribute-name> : User attribute
+input.user.<attribute-name> : User attribute
 data.tracerequests[i].traceid : Trace request ID from a record in the reference data
 data.tracerequests[i].<attribute-name> : An attribute in a trace request record in the reference data
 ```
