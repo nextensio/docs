@@ -310,10 +310,153 @@ Obviously I know the answer is NO :), its just a food for thought for future
 
 ### Policy Examples / Policy Library
 
-Below we provide examples of template policies that can be cut + pasted and adapted. The template policies
-cover a lot of the common scenarios and should be useful in getting off the ground fast.
+Below are some templates for policies that can be copy + pasted and adapted. The templates for each type
+of policy provide a basic framework using one of two methods :
+* Template1 is based on using all match values encapsulated within the policy itself (ie., there is no
+reference configuration data required). Looked at another way, attributes and their match values that
+would be entered into the AppGroup or Host configuration are instead entered directly into match statements
+in the corresponding policies. This template can be used for small deployments. 
+* Template2 is based on using match values from configured data. By taking attribute match values from a
+configuration file instead being specified directly in a policy, it enables writing policies in a compact
+and generic way. This template can be used for large deployments.
 
-TODO ASHWIN: pls fill this up
+TODO: Need specific use cases to adapt the templates to provide a library of policies for common scenarios.
+Those policies also need to be accompanied by the user attributes and associated values assumed. For policies
+based on Template2, AppGroup or Host attributes together with match values assumed need to be included.
+
+
+#### Access Policy Template1
+
+```
+package app.access
+allow = is_allowed
+default is_allowed = false
+
+# Create more rules as needed if logic is rule1 OR rule2 OR rule3 OR rule4 .... for a bundle ID
+# Rule # 1 for bundle ID1
+is_allowed {
+    input.bid == "$BUNDLE-ID1"                         # bundle ID == AppGroup ID
+    # if using multiple rules for this bundle ID, ensure at least one attribute value match is
+    # common in all rules and matches to true for only one rule
+    # change == to >, >=, <, <= ... as needed
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"           # string value
+    input.user.$ATTRIBUTE2 == $INTEGER-VALUE            # integer value
+    # add more expressions as needed
+}
+# Rule # 2 for bundle ID1
+is_allowed  {
+    input.bid == "$BUNDLE-ID1"                         # bundle ID == AppGroup ID
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"           # string value
+    input.user.$ATTRIBUTE3 == $INTEGER-VALUE            # integer value
+    # add more expressions as needed using guidelines above
+}
+
+# Similarly, create one or more rules as needed for more bundle IDs
+# Rule # 1 for bundle ID2
+is_allowed {
+    input.bid == "$BUNDLE-ID2"                         # bundle ID == AppGroup ID
+    input.user.$ATTRIBUTE4 == "$STRING-VALUE"           # string value
+    input.user.$ATTRIBUTE5 == $INTEGER-VALUE            # integer value
+    # add more expressions as needed using guidelines above
+}
+```
+
+#### Access Policy Template2
+
+```
+package app.access
+allow = is_allowed
+default is_allowed = false
+
+# Create more rules as needed if logic is rule1 OR rule2 OR rule3 OR rule4 .... across all bundles
+# Rule # 1
+is_allowed {
+    some bundle
+    input.bid == data.bundles[bundle].bid     # to ensure checks below are for target bundle ID
+    # if using multiple rules, ensure at least one attribute value match is common in all rules and
+    # matches to true for only one rule
+    # if AppGroup attribute is an array, use $APPGROUP-ATTRIBUTE[_] to match with any value
+    # replace == by >=, <=, <, >, != as needed
+    input.user.$ATTRIBUTE1 == data.bundles[bundle].$APPGROUP-ATTRIBUTE1
+    input.user.$ATTRIBUTE2 == data.bundles[bundle].$APPGROUP-ATTRIBUTE2
+    # add more match expressions as needed
+}
+# Rule # 2
+is_allowed  {
+    some bundle
+    input.bid == data.bundles[bundle].bid     # to ensure checks below are for target bundle ID
+    # if AppGroup attribute is an array, use $APPGROUP-ATTRIBUTE[_] to match with any value
+    input.user.$ATTRIBUTE1 == data.bundles[bundle].$APPGROUP-ATTRIBUTE1
+    input.user.$ATTRIBUTE3 == data.bundles[bundle].$APPGROUP-ATTRIBUTE3
+    # add more expressions as needed using guidelines above
+}
+```
+
+#### Route Policy Template 1
+
+```
+package user.routing
+default route_tag = ""
+
+# Create more rules as needed for route tags for each host
+# Rule # 1 for route tag1 for host1
+route_tag = rtag {
+    input.host == "$HOST1"
+    # if using multiple rules for this host route, ensure at least one attribute value match
+    # is common in all rules and matches to true for only one rule
+    # replace == by >=, <=, <, >, != as needed
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"    # string value
+    input.user.$ATTRIBUTE2 == $INTEGER-VALUE     # integer value
+    # add more expressions as needed
+    rtag := "$ROUTE-TAG1"
+}
+# Rule # 2 for route tag2 for host1
+route_tag = rtag  {
+    input.host == "$HOST1"
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"    # string value
+    input.user.$ATTRIBUTE3 == $INTEGER-VALUE     # integer value
+    # add more expressions as needed using guidelines above
+    rtag := "$ROUTE-TAG2"
+}
+
+# Rule # 1 for route tag3 for host2
+route_tag = rtag {
+    input.host == "$HOST2"
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"    # string value
+    input.user.$ATTRIBUTE4 == $INTEGER-VALUE     # integer value
+    # add more expressions as needed using guidelines above
+    rtag := "$ROUTE-TAG3"
+}
+# Rule # 2 for route tag4 for host2
+route_tag = rtag {
+    input.host == "$HOST2"
+    input.user.$ATTRIBUTE1 == "$STRING-VALUE"    # string value
+    input.user.$ATTRIBUTE5 == $INTEGER-VALUE     # integer value
+    # add more expressions as needed using guidelines above
+    rtag := "$ROUTE-TAG4"
+}
+```
+
+#### Route Policy Template 2
+
+```
+package user.routing
+default route_tag = ""
+
+route_tag = rtag {
+    some idx
+    input.host == data.hosts[idx].host
+    some route
+    # if using multiple rules, ensure at least one attribute value match is common in all rules and
+    # matches to true for only one rule
+    # if host route attribute is an array, use $HOSTROUTE-ATTRIBUTE[_] to match with any value
+    # replace == by >=, <=, <, >, != as needed
+    input.user.$ATTRIBUTE1 == data.hosts[idx].routeattrs[route].$HOSTROUTE-ATTRIBUTE1
+    input.user.$ATTRIBUTE2 == data.hosts[idx].routeattrs[route].$HOSTROUTE-ATTRIBUTE2
+    # add more match expressions as needed
+    rtag := data.hosts[idx].routeattrs[route].tag
+}
+```
 
 ## Next 
 
