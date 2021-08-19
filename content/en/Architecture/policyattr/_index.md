@@ -308,7 +308,7 @@ Is that still written as one big policy with "if appgroup == abc then this else 
 "if host == xyz then this else that" or do we allow customer to organize policies per appgroup/host ? 
 Obviously I know the answer is NO :), its just a food for thought for future
 
-### Policy Examples / Policy Library
+### Policy Templates
 
 Below are some templates for policies that can be copy + pasted and adapted. The templates for each type
 of policy provide a basic framework using one of two methods :
@@ -319,10 +319,6 @@ in the corresponding policies. This template can be used for small deployments.
 * Template2 is based on using match values from configured data. By taking attribute match values from a
 configuration file instead being specified directly in a policy, it enables writing policies in a compact
 and generic way. This template can be used for large deployments.
-
-TODO: Need specific use cases to adapt the templates to provide a library of policies for common scenarios.
-Those policies also need to be accompanied by the user attributes and associated values assumed. For policies
-based on Template2, AppGroup or Host attributes together with match values assumed need to be included.
 
 
 #### Access Policy Template1
@@ -455,6 +451,470 @@ route_tag = rtag {
     input.user.$ATTRIBUTE2 == data.hosts[idx].routeattrs[route].$HOSTROUTE-ATTRIBUTE2
     # add more match expressions as needed
     rtag := data.hosts[idx].routeattrs[route].tag
+}
+```
+
+### Policy Examples Library
+
+The goal here is to build up a library of sample policies for different use cases so as to give a gist of
+how the policies can be written. These sample policies can be selected and adapted as per the needs of each
+Nextensio customer. Policies can be written in different ways, based on the style and skills of the author,
+and there is no one right way to write any policy. The policies are not unlike any software program written
+in your favorite programming language such as C, Go, Rust, Javascript, Python, etc even though Rego, the
+policy language, is simpler and at a higher level than the other languages.
+
+Besides giving a gist of how to write Nextensio policies, this library will also try to cover use cases
+to illustrate when/where such policies can be used. We will obviously not be able to cover all possible
+use cases, and these use cases will keep evolving over time.
+
+As with the templates above, these sample policies for each use case are based on each of the two methods :
+* using all match values encapsulated within the policy itself (ie., there is no reference configuration
+data required). Looked at another way, attributes and their match values that would be entered into the
+AppGroup or Host configuration are instead entered directly into match statements in the corresponding
+policies. These samples can be used for small deployments. 
+* using match values from configured data. By taking attribute match values from a configuration file
+instead being specified directly in a policy enables writing policies in a compact and generic way. These
+samples can be used for large deployments.
+
+These sample policies are also accompanied by the user attributes and associated values assumed. For policies
+using AppGroup or Host attributes configuration data, those attributes together with match values assumed
+are included. Since Nextensio policies deal with attributes, they have to go hand-in-hand for full context.
+
+
+#### Access Policy Samples
+
+##### Merger and acquisition use case
+
+An online photo editing software company, EZphoto, acquired an image processing tool company called iPixel.
+The data centers of EZphoto and iPixel use overlapping IP subnet ranges. EZphoto needs a quick IT solution
+to enable employees of EZphoto to access the data centers of both EZphoto and iPixel while limiting iPixel
+employees to access only the iPixel data center.
+
+The logic for this can be depicted in multiple ways. Translating the above intent, we can depict it as
+
+```
+IF USER DOMAIN == EZPHOTO.COM AND DESTINATION DOMAIN == EZPHOTO.COM
+    ALLOW ACCESS
+IF USER DOMAIN == EZPHOTO.COM AND DESTINATION DOMAIN == IPIXEL.COM
+    ALLOW ACCESS
+IF USER DOMAIN == IPIXEL.COM AND DESTINATION DOMAIN == EZPHOTO.COM
+    DENY ACCESS
+IF USER DOMAIN == IPIXEL.COM AND DESTINATION DOMAIN == IPIXEL.COM
+    ALLOW ACCESS
+```
+
+The above can be condensed a bit to
+
+```
+IF USER DOMAIN == EZPHOTO.COM
+    ALLOW ACCESS
+IF USER DOMAIN == IPIXEL.COM AND DESTINATION DOMAIN == IPIXEL.COM
+    ALLOW ACCESS
+ELSE
+    DENY ACCESS
+```
+
+This can be condensed even further to
+
+```
+IF DESTINATION DOMAIN == EZPHOTO.COM AND USER DOMAIN != EZPHOTO.COM
+     DENY ACCESS
+ELSE 
+    ALLOW ACCESS
+```
+
+If the logic for this simple intent can be expressed in so many ways, a policy to implement that logic can
+also be written in many ways. Which way is chosen will depend on the author and maybe reviewers (if there
+are any), but may also depend on what other granular access restrictions EZphoto already has in place for
+their users and any other new ones they would like to bring in for iPixel users.
+
+To address the above intent, we would need at least one user attribute:
+1. businessUnit - "ezphoto" or "ipixel"
+
+Also, assume
+IPixel data center is accessed via Connector called ipixel-dc1.com and 
+EzPhoto data center is accessed via Connector called ezphoto-dc1.com
+
+The access policy using template1 format could be written as follows. Note that Appgroup attributes
+are not required here.
+
+```
+package app.access
+allow = is_allowed
+
+default is_allowed = false
+is_allowed  {
+    # Allow ezphoto employee to access either data ccenter
+    input.user.businessUnit == "ezphoto"
+}
+is_allowed  {
+    # Allow ipixel employee to access data center behind ipixel-dc1 only 
+    input.bid == "ipixel-dc1.com"
+    input.user.businessUnit == "ipixel"
+}
+```
+
+A more elegant but slightly longer policy could look like this. This policy uses functions to make it more
+readable.
+
+```
+package app.access
+allow = is_allowed
+
+default is_allowed = false
+is_allowed  {
+    # Allow ezphoto employee to access either data ccenter
+    user_is_ezphoto_employee
+}
+is_allowed  {
+    input.bid == "ipixel-dc1.com"
+    user_is_ipixel_employee
+}
+
+default user_is_ezphoto_employee = false
+user_is_ezphoto_employee {
+    input.user.businessUnit == "ezphoto"
+}
+
+default user_is_ipixel_employee = false
+user_is_ipixel_employee {
+    input.user.businessUnit == "ipixel"
+}
+```
+
+Now let's consider how the above policy would look if we were to define AppGroup attributes for our two
+Connectors and assign them some match values for use in the policy. 
+
+Assume we define the attribute buAllowed per Connector. Note that it is defined as an array of string
+values so that we can match against multiple values. 
+
+```
+Connector 	 Attribute      Match values		Comments
+-------------------------------------------------------------------------------------------------------
+ezphoto-dc1.com	 buAllowed	["ezphoto"]		Only users with businessUnit = "ezphoto"
+ipixel-dc1.com   buAllowed	["ipixel","ezphoto"]	Users with businessUnit = "ezphoto" or "ipixel"
+
+
+package app.access
+allow = is_allowed
+
+default is_allowed = false
+is_allowed  {
+	some bundle
+	# bundle is used to iterate through the multiple Connectors (AppGroups)
+	input.bid == data.bundles[bundle].bid
+        # match attribute used to distinguish EZphoto from iPixel employees
+	input.user.businessUnit == data.bundles[bundle].buAllowed[_]
+}
+```
+
+Here we see a very compact policy with a single rule that leverages match values from the AppGroup
+attributes configuration.
+
+None of the policies above have any reference to either data center's IP subnet. Nextensio does not
+care about the IP subnets and allows control of access to each data center even if they have overlapping
+IP subnets.
+
+
+#### Route Policy Samples
+
+##### Traffic management for service quality based on user tier
+
+A web services company wants to manage user traffic based on user tier - whether user is a paying
+customer or a non-paying customer (in a free tier). The company has two data centers for the same
+services, one hosted in a premium cloud provider and the other hosted in a cheaper cloud provider.
+Paying customers are to be directed to the data center in the premium cloud provider whereas the
+non-paying customers are to be directed to the cheaper cloud provider.The premium cloud provider
+provides faster processors with more cores and more memory as well as a richer set of storage options.
+
+Let's assume the web services company provides its services at superduper.com.
+Let's also assume the Nextensio instance of this service for paying customers will be prem.superduper.com
+and the instance for non-paying customers will be free.superduper.com. Note that these two instances
+will be totally transparent to all users; users only see and access superduper.com. Both data centers
+run exactly the same application hosted at the same URL and need to make absolutely no changes in their
+data centers.
+
+The logic for this intent can be written as
+
+```
+IF USER IS PAYING CUSTOMER
+    ROUTE TO prem.superduper.com
+ELSE
+    ROUTE TO free.superduper.com
+```
+
+User attribute needed:
+1. userTier = "free" or "premium"
+
+The Route policy using template1 could be written as follows. Note that the Host attributes are not
+required here.
+
+```
+package user.routing
+default route_tag = "free"
+
+route_tag = rtag {
+    input.host == "superduper.com"
+    input.user.userTier == "premium"
+    rtag := "prem"
+}
+```
+
+Now let's consider how the above policy would look if we were to define Host attributes for our two
+instances of superduper.com and assign them some match values for use in the policy. 
+
+Assume we define the attribute userTierSelect per route/instance tag of host superduper.com.
+
+```
+Tag 	 Attribute        Match values	  Comments
+-------------------------------------------------------------------------------------------------------
+free	 userTierSelect	  "free"	  Non-paying customers/users
+prem   	 userTierSelect	  "premium	  Paying customers/users
+
+
+package user.routing
+default route_tag = "free"
+
+route_tag = rtag {
+    some hostidx
+    some route
+    # ensure we are matching attributes for the correct host
+    input.host == data.hosts[hostidx].host
+    input.user.userTier == data.hosts[hostidx].routeattrs[route].userTierSelect
+    rtag := data.hosts[hostidx].routeattrs[route].tag
+} 
+```
+
+The above use case is obviously a very simple one. If there are other hosts (applications) besides
+superduper.com where such traffic management needs to be done, the second policy example may provide
+a more compact policy, since the first example will require replicating the rules for each host.
+There may also be other traffic management requirements to be applied to other hosts as well. So consider
+these and scaling factors befoe deciding which way to go as well as what value to chose for the default 
+route tag. 
+
+
+##### Traffic management to distribute workload during peak hours
+
+A network service company has two data centers providing the same services. One data center is located
+in Equinix and the other in AWS. The company wants to prioritize resource usage and distribute workload 
+during peak hours by directing all contractors, partners, and consultants as well as everyone from the 
+sales team to AWS during that time. All other users will be directed to the Equinix data center. 
+During non-peak hours, all users will be directed to the Equinix data center. Peak hours are defined as
+9am to 12pm.
+
+The logic for the above intent can we written as follows:
+
+```
+IF TIME OF DAY BETWEEN 9 AM TO 12 PM  AND  USER GROUP == "contractor" OR "consultant" OR partner"
+    ROUTE to AWS-DATA-CENTER
+ELSE IF TIME OF DAY BETWEEN 9 AM TO 12 PM  AND  USER TEAM == "sales"
+    ROUTE TO AWS-DATA-CENTER
+ELSE
+    ROUTE TO EQUINIX-DATA-CENTER
+```
+
+User attributes needed for a policy are:
+1. userGroup = "employee" or "contractor" or "consultant" or "partner"
+2. userTeam = "sales" + many others ("hr", "marketing", "finance", "support", "manufacturing", ...)
+
+Assume the services provided by the company are at spiffyservice.com.
+We will designate the AWS instance of the service as aws.spiffyservice.com
+and the Equinix instance as equinix.spiffyservice.com.
+
+
+The routing policy based on template1 can look like this.
+
+```
+package user.routing
+default route_tag = "equinix"
+
+# match for traffic to be sent to AWS :
+# traffic from contractors, consultants or vendors or sales team during peak hours
+route_tag = rtag {
+    is_peak_time
+    input.host == "spiffyservice.com"
+    is_nonemployee
+    rtag := "aws"
+} 
+route_tag = rtag {
+    is_peak_time
+    input.host == "spiffyservice.com"
+    # identify sales team traffic during peak time
+    input.user.userGroup == "employee"
+    input.user.userTeam == "sales"
+    rtag := "aws"
+}
+
+default is_nonemployee = false
+is_nonemployee {
+    input.user.userGroup == "contractor"
+}
+is_nonemployee {
+    input.user.userGroup == "consultant"
+}
+is_nonemployee {
+    input.user.userGroup == "partner"
+}
+
+default is_peak_time = false
+is_peak_time {
+    ctime := time.clock([time.now_ns(), ""])
+    #Note: hours are in UTC here but can be made "Local" as well.
+    ctime[0] >= 21 
+    ctime[0] < 24
+}
+```
+
+Note that in the second rule, we have a check for userGroup == "employee". Without this check, if we
+were to check just userTeam == "sales", there could be a conflict between the two rules if any contractor,
+consultant or partner are also part of the sales team. This would result in a policy evaluation error.
+The userGroup check ensures that only one of the two rules evaluates to true at any time. This is a very
+important aspect that has to be considered when defining the rules. Match criteria and values have to be
+carefully considered for connected rules to avoid conflicts.
+
+Now let's consider how the above policy would look if we were to define Host attributes for our two
+instances of spiffyservice.com and assign them some match values for use in the policy. 
+
+Peak time logic:
+
+```
+userGroup	userTeam	tag
+---------------------------------------
+employee	sales		aws
+employee	not sales	equinix
+contractor	any		aws
+consultant	any		aws
+partner		any		aws
+```
+
+Assume we define the attributes userGroupSelect and userTeamSelect per route/instance tag of
+spiffyservice.com. To achieve the above logic, we would have to configure match values as follows:
+
+```
+Tag 	 Attribute		Match values	
+-------------------------------------------------------------
+aws	 userGroupSelect	["contractor","consultant","partner"]
+	 userTeamSelect		["sales"]
+equinix  userGroupSelect	[""]
+	 userTeamSelect		[""]
+
+package user.routing
+default route_tag = "equinix"
+
+# match for traffic to be sent to AWS :
+# traffic from nonemployees or sales team during peak hours
+route_tag = rtag {
+    is_peak_time
+    some hostidx
+    input.host == data.hosts[hostidx].host
+    some route
+    # identify nonemployee traffic during peak time
+    input.user.userGroup == data.hosts[hostidx].routeattrs[route].userGroupSelect[_]
+    # return tag from route entry matched
+    rtag := data.hosts[hostidx].routeattrs[route].tag
+} 
+route_tag = rtag {
+    is_peak_time
+    some hostidx
+    input.host == data.hosts[hostidx].host
+    some route
+    # identify sales team traffic during peak time
+    input.user.userGroup != data.hosts[hostidx].routeattrs[route].userGroupSelect[_]
+    input.user.userTeam == data.hosts[hostidx].routeattrs[route].userTeamSelect[_]
+    # return tag from route entry matched
+    rtag := data.hosts[hostidx].routeattrs[route].tag
+}
+
+default is_peak_time = false
+is_peak_time {
+    ctime := time.clock([time.now_ns(), ""])
+    #Note: hours are in UTC here but can be made "Local" as well.
+    ctime[0] >= 21 
+    ctime[0] < 24
+}
+```
+
+In the rules above, the attribute matches have focused on the logic for identifying the traffic
+to be sent to AWS since the default is set to equinix. In reality, there may be other hosts
+and they may not all be located in the Equinix data center. When the default data center for
+different hosts varies, it would be better to have the default route tag as "" as well as have
+one instance of each host without any route tag prefix. For eg., we could have left the Equinix
+instance as spiffyservice.com and designated the AWS instance as aws.spiffyservice.com.
+
+
+##### Service migration using canary deployment
+
+An insurance company wants to roll out a new version of a pricing application. The instance
+of the new version will be deployed in AWS at its Virginia site. The current version of the
+pricing application runs in a data center located at Equinix in Chicago.
+To start testing the new version of the pricing application, the company wants just the sales
+team members located in the Boston region and running PCs with Windows10 to be able to access
+the application. All other users should continue to access the application instance in Equinix.
+The goal is to add more users to use the new version based on the experience of the Boston sales
+team Windows10 users.
+
+The logic for this intent can be phrased as
+
+```
+IF USER TEAM  ==  SALES  AND  USER LOCATION  ==  BOSTON  AND  USER OSTYPE ==  WINDOWS10
+    ROUTE TO AWS-VIRGINIA
+ELSE
+    ROUTE TO EQUINIX-CHICAGO
+```
+
+The user attributes we would need are:
+1. userTeam = "sales", and many others
+2. userLocation = "boston" and many others
+3. userOsType = "windows10", and some others
+
+Assume the pricing application is called salespricing@bestinsurance.com. The current version
+will be available in the instance called salespricing@bestinsurance.com whereas the new version
+will be available in the instance called new.salespricing@bestinsurance.com.
+
+
+A policy based on template1 (not using host attributes) can look like this:
+
+```
+package user.routing
+default route_tag = ""
+
+route_tag = rtag {
+    input.host == "salespricing@bestinsurance.com"
+    input.user.userTeam == "sales"
+    input.user.userLocation == "boston"
+    input.user.userOsType == "windows10"
+    rtag := "new"
+}
+```
+
+Now assume we configure the following host attributes for route tag "new" for salespricing@bestinsurance.com:
+1. userTeamSelect = ["sales"]
+2. userLocationSelect = ["boston"]
+3. userOsTypeSelect = ["windows10"]
+
+```
+Tag 	 Attribute		Match values	
+-------------------------------------------------------------
+new	 userLocationSelect	["boston"]
+	 userTeamSelect		["sales"]
+	 userOsTypeSelect	["windows10"]
+```
+
+All the attributes are defined as array type so that more values can be added for selection
+in future. For eg., other locations besides Boston can be added. Or maybe MacOs users, and so on.
+A policy based on template2 using these attributes would look like this :
+
+```
+package user.routing
+default route_tag = ""
+
+route_tag = rtag {
+    some hostidx, route
+    input.host == data.hosts[hostidx].host   
+    input.user.userTeam == data.hosts[hostidx].routeattrs[route].userTeamSelect[_]
+    input.user.userLocation == data.hosts[hostidx].routeattrs[route].userLocationSelect[_]
+    input.user.userOsType == data.hosts[hostidx].routeattrs[route].userOsTypeSelect[_]
+    rtag := data.hosts[hostidx].routeattrs[route].tag
 }
 ```
 
