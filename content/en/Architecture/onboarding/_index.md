@@ -85,10 +85,10 @@ in the data center and assigning them to a connector. Its upto the customer to d
 together but apps grouped together should have similar security requirements. An AppGroup is mapped to a
 Connector, hence this step basically defines the Connectors.
 
-An AppGroup is also created in controller.nextensio.net with just another username (email id) and password ! 
-Customer also specifies the URLs for the services/hosts that are members of the AppGroup. For example, 
-if the customer domain is awesomecustomer.com, App-X might have the sub domain appx.awesomecustomer.com and 
-App-Y might be appy.awesomecustomer.com.
+An AppGroup is also created in controller.nextensio.net with just another username (in email id format)
+and password ! Customer also specifies the URLs for the applications that are members of the AppGroup.
+For example, if the customer domain is awesomecustomer.com, App-X might have the URL appx.awesomecustomer.com
+and App-Y might be appy.awesomecustomer.com.
 
 Add AppGroup             
 :-------------------------:
@@ -100,7 +100,7 @@ covered in step 4 below and also explained in more detail in section [Policies a
 * The AppGroup ID is an email id. 
 * The AppGroup Name is just a descriptive string
 * The AppGroup Compute Pods (default 1). This represents the number of connectors per AppGroup ID. There can be multiple connectors for scale (load balancing) and/or redundancy. The default value of one connector is a good start!
-* Services: in our example, customer will enter appx.awesomecustomer.com, appy.awesomecustomer.com
+* Services: in our example, customer will enter the application URLs appx.awesomecustomer.com, appy.awesomecustomer.com
 
 Note that we will have to enter two records - one for AppGroup-DCA and one for AppGroup-DCB. This helps
 identify each connector uniquely, and thereby apply access policies per connector.
@@ -110,27 +110,28 @@ no need to distinguish the connectors and controlling traffic to each connector.
 
 ### STEP4: Define and create attributes
 
-Nextensio routes user traffic based on host/service URLs to AppGroups (or connectors). It allows having
-multiple instances of any host/service and selecting a specific instance based on a routing policy.
+Nextensio routes user traffic based on application URLs to AppGroups (or connectors). It allows having
+multiple instances of any application and selecting a specific instance based on a routing policy.
 Once an instance is selected (and there may be just one to select from), nextensio then determines the
 AppGroup for that instance and sends the user's traffic to that AppGroup connector.
-In this whole process, nextensio also provides two stages for access control - one  at the host/service
-level via the Routing policy itself, and next at the connector level via a separate Access policy.
+In this whole process, nextensio also provides two stages for access control - one  at the application
+level via the Routing policy itself, and next at the AppGroup level via a separate Access policy.
 Access control may be implemented at the first stage, or at the second stage, or at both stages,
 depending on requirements.
 The routing and access-control policies are all based on attributes, hence one needs to define and
 create the attributes involved -
 * User attributes - a set of attributes that apply to all users. Values will vary from user to user.
-* Host attributes - a set of attributes that apply to all hosts. Values will vary from host to host and play a role in access control and routing.
+* Host attributes - a set of attributes that apply to all applications. Values will vary from application to application and play a role in access control and routing.
 * AppGroup attributes - a set of attributes that apply to all AppGroups. Values will vary from one AppGroup ID to another and play a role in access-control to a connector, and thereby, to a datacenter.
 
 Out of these, the user attributes are mandatory. The other attributes may or not be created at this time.
-If the number of hosts/services is very small, the host attribute creation can be avoided depending on
+If the number of applications is very small, the host attribute creation can be avoided depending on
 if and how the Route policy is written. Similarly, if the number of AppGroups is very small, the AppGroup
 attribute creation can be avoided depending on if and how the Access policy is written. More details on 
 this in a later section on policies and attributes.
+Note: host above refers to the server hosting the application and is used synonymously with application.
 
-The AppGroups created above have host/service URLs appx.awesomecustomer.com and appy.awesomecustomer.com as members. 
+The AppGroups created above have application URLs appx.awesomecustomer.com and appy.awesomecustomer.com as members. 
 Let's say for example that App-X and App-Y in DCA are to be used only by engineering team, while App-X
 and App-Y in DCB are to be accessible only by managers. We would first define two attributes per user, one to
 represent the department, and one to indicate if user is a manager.
@@ -146,7 +147,7 @@ Add Hosts
 :-------------------------:
 ![](/architecture/onboarding/host_add.jpg)
 
-So in the above page, we would add TWO hosts - appx.awesomecustomer.com and appy.awesomecustomer.com.
+So in the above page, we would add TWO hosts (applications) - appx.awesomecustomer.com and appy.awesomecustomer.com.
 The attributes can be left alone for now since adding the hosts is sufficient for bootstrapping.
 We can similarly skip the AppGroup attributes for bootstrapping.
 The full capabilities will be explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
@@ -168,7 +169,7 @@ appy.awesomecustomer.com. The connector is also authenticated/validated by loggi
 that was created when creating each AppGroup ID. The same connector software is used for any number of AppGroups
 customer has defined. There will need to be one connector launched per AppGroup ID (there can be more as
 covered above under 'Add AppGroup') . The act of authenticating the connector also makes the connector aware
-of what services/hosts its serving. 
+of what applications it's serving. 
  
 And with these steps, a new Nextensio customer is up and running; the users can access App-X and App-Y in the
 two data centers. Once bootstrapped, there are powerful features that can be added on, which we will talk about in
@@ -178,9 +179,9 @@ Connector Image
 :-------------------------:
 ![](/architecture/onboarding/images.jpg)
 
-Every connector connects to one nextensio gateway (TODO: dual homing ??). The connector is linux binary that
-can be run independentl or packaged as a docker container or inside a kubernetes cluster etc.. - however
-customer chooses. The connectoris la unched as "connector -gateway gatewaydosfo3.nextensio.net" as an
+Every connector connects to one nextensio gateway (TODO: dual homing ??). The connector is a linux binary that
+can be run independently or packaged as a docker container or inside a kubernetes cluster etc.. - however
+customer chooses. The connector is launched as "connector -gateway gatewaydosfo3.nextensio.net" as an
 example and then it will prompt for a user name and password - which is the data entered when creating
 AppGroups (section above). The list of nextensio gateways can be seen below
 
@@ -217,7 +218,7 @@ CANNOT peek into customer's encrypted data.
 ### Data Center is completely darkened
 
 Connectors establish connection inside to outside, so there is no need to tinker with any firewall/security
-rules! There is no need to advertise your private services to the world through DNS - keep it all within your
+rules! There is no need to advertise your private applications/services to the world through DNS - keep it all within your
 data center.
 
 ### Whatever happened to IP addresses ?
