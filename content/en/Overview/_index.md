@@ -68,7 +68,7 @@ better out there!
 
 Now suddenly the cloud gateway is not dealing with routing IP addresses any more, its dealing
 with connecting services. So we have a database of services and users trying to reach backends
-offering those services, and backeds trying to reach other backends offering some services.
+offering those services, and backends trying to reach other backends offering some services.
 And that opens up the possibility for doing a very rich set of routing and policies, and 
 very rich telemetry and AI-Ops based on more abstract, more meaningful data than just ip addresses.
 
