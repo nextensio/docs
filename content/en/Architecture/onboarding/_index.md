@@ -121,34 +121,33 @@ depending on requirements.
 The routing and access-control policies are all based on attributes, hence one needs to define and
 create the attributes involved -
 * User attributes - a set of attributes that apply to all users. Values will vary from user to user.
-* Host attributes - a set of attributes that apply to all applications. Values will vary from application to application and play a role in access control and routing.
+* App attributes - a set of attributes that apply to all applications. Values will vary from application to application and play a role in access control and routing.
 * AppGroup attributes - a set of attributes that apply to all AppGroups. Values will vary from one AppGroup ID to another and play a role in access-control to a connector, and thereby, to a datacenter.
 
 Out of these, the user attributes are mandatory. The other attributes may or not be created at this time.
-If the number of applications is very small, the host attribute creation can be avoided depending on
+If the number of applications is very small, the App attribute creation can be avoided depending on
 if and how the Route policy is written. Similarly, if the number of AppGroups is very small, the AppGroup
 attribute creation can be avoided depending on if and how the Access policy is written. More details on 
 this in a later section on policies and attributes.
-Note: host above refers to the server hosting the application and is used synonymously with application.
 
 The AppGroups created above have application URLs appx.awesomecustomer.com and appy.awesomecustomer.com as members. 
 Let's say for example that App-X and App-Y in DCA are to be used only by engineering team, while App-X
 and App-Y in DCB are to be accessible only by managers. We would first define two attributes per user, one to
 represent the department, and one to indicate if user is a manager.
 For the AppGroups, we could define two attributes per AppGroup ID, one to represent the team(s) allowed and one to indicate whether managers are allowed or not.
-These attributes are created via controller.nextensio.net for each user, host and AppGroup.
+These attributes are created via controller.nextensio.net for each user, App and AppGroup.
 We discuss this case in more detail in the Attributes and Policies section.
 
 Note that the customer defines the attributes and creates them. Nextensio provides an attribute editor to
-define the attributes and assign them to users, hosts, or AppGroups. Nextensio does not control or need to
+define the attributes and assign them to users, Apps, or AppGroups. Nextensio does not control or need to
 know what the attributes are - they are defined and created exclusively by customers.
 
-Add Hosts             
+Add Apps
 :-------------------------:
 ![](/architecture/onboarding/host_add.jpg)
 
-So in the above page, we would add TWO hosts (applications) - appx.awesomecustomer.com and appy.awesomecustomer.com.
-The attributes can be left alone for now since adding the hosts is sufficient for bootstrapping.
+So in the above page, we would add TWO applications - appx.awesomecustomer.com and appy.awesomecustomer.com.
+The attributes can be left alone for now since adding the applications is sufficient for bootstrapping.
 We can similarly skip the AppGroup attributes for bootstrapping.
 The full capabilities will be explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
 
@@ -179,11 +178,24 @@ Connector Image
 :-------------------------:
 ![](/architecture/onboarding/images.jpg)
 
-Every connector connects to one nextensio gateway (TODO: dual homing ??). The connector is a linux binary that
+Every connector connects to one nextensio gateway (TODO: dual homing). The connector is a linux binary that
 can be run independently or packaged as a docker container or inside a kubernetes cluster etc.. - however
-customer chooses. The connector is launched as "connector -gateway gatewaydosfo3.nextensio.net" as an
-example and then it will prompt for a user name and password - which is the data entered when creating
-AppGroups (section above). The list of nextensio gateways can be seen below
+customer chooses. Before launching a connector, one has to obtain a key. On the AppGroup configuration page,
+pick the AppGroup ID for which the connector needs to be launched and click on the "key" icon located towards
+the right hand edge of the page. A small window will pop up displaying the key with a "Copy" button on the
+lower right edge. Click this button to copy the key and then save it in a file.
+
+Connector Key
+:-------------------------:
+![](/architecture/onboarding/connector_key.jpg)
+![](/architecture/onboarding/connector_key_copy.jpg)
+
+This file with the key now needs to be transferred to the server where the connector will run. The recommended
+default location is /opt/nextensio/connector.key, but the customer can put it anywhere else if desired.
+If the file is in the default location, run "./connector". Thats it !
+If the file is in a different location, run "./connector -key <key file location>"
+
+The list of nextensio gateways can be seen below
 
 #### Gateway details
 
