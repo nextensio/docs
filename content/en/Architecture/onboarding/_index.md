@@ -163,9 +163,9 @@ explained in a later section.
 
 ### STEP6: Run connectors in data centers
 
-Download the connector sofware and run it in DCA and DCB on any servers that can reach appx.awesomecustomer.com and
-appy.awesomecustomer.com. The connector is also authenticated/validated by logging in with the username/password
-that was created when creating each AppGroup ID. The same connector software is used for any number of AppGroups
+At a high level, this consists of downloading the connector sofware to run it in DCA and DCB on any servers
+that can reach appx.awesomecustomer.com and appy.awesomecustomer.com. The connector is provided with an authentication
+key and the gateweay to connect to. The same connector software is used for any number of AppGroups
 customer has defined. There will need to be one connector launched per AppGroup ID (there can be more as
 covered above under 'Add AppGroup') . The act of authenticating the connector also makes the connector aware
 of what applications it's serving. 
@@ -174,28 +174,41 @@ And with these steps, a new Nextensio customer is up and running; the users can 
 two data centers. Once bootstrapped, there are powerful features that can be added on, which we will talk about in
 future sections
 
+The connector image can be downloaded from the Images page. Every connector connects to one nextensio gateway. The
+connector is a linux binary that can be run independently or packaged as a docker container
+or inside a kubernetes cluster etc., - however customer chooses.
+
 Connector Image             
 :-------------------------:
 ![](/architecture/onboarding/images.jpg)
 
-Every connector connects to one nextensio gateway (TODO: dual homing). The connector is a linux binary that
-can be run independently or packaged as a docker container or inside a kubernetes cluster etc.. - however
-customer chooses. Before launching a connector, one has to obtain a key. On the AppGroup configuration page,
-pick the AppGroup ID for which the connector needs to be launched and click on the "key" icon located towards
-the right hand edge of the page. A small window will pop up displaying the key with a "Copy" button on the
-lower right edge. Click this button to copy the key and then save it in a file.
 
-Connector Key
+
+Before launching a connector, the customer needs to do two things :
+* obtain an authentication key. 
+* select a gateway from a drop-down list for the connector to connect to. 
+
+
+Connector Authentication Key
 :-------------------------:
 ![](/architecture/onboarding/connector_key.jpg)
 ![](/architecture/onboarding/connector_key_copy.jpg)
 
-This file with the key now needs to be transferred to the server where the connector will run. The recommended
-default location is /opt/nextensio/connector.key, but the customer can put it anywhere else if desired.
-If the file is in the default location, run "./connector". Thats it !
-If the file is in a different location, run "./connector -key <key file location>"
 
-The list of nextensio gateways can be seen below
+On the AppGroup configuration page, pick the AppGroup ID for which the connector needs to be launched and click on the
+"key" icon located towards the right hand edge of the page. A small window will pop up displaying the key with a "Copy"
+button on the lower right edge. Click this button to copy the key and then save it in a file. This file with the key
+then needs to be transferred to the server where the connector will run. The recommended default location is
+/opt/nextensio/connector.key, but the customer can put it anywhere else if desired.
+
+Next, select a gateway from the drop-down list as shown below for 'List of available gateways'. The drop-down list
+should be presenting gateways based on geo-location.
+
+If the file containing the authentication key is in the default location, run
+* "./connector -gateway \<gateway name\>"
+
+If the file with the authentication key is in a different location, run
+* "./connector -key \<key file location\> -gateway \<gateway name\>"
 
 #### Gateway details
 
@@ -211,7 +224,7 @@ a fine start for bootstrapping
 
 The gateway name gatewaydosfo3.nextensio.net is an example name for one of the nextensio gateways. Customer
 can decide which gateway to connect to from a connector, or have multiple connectors for the AppGroup each 
-connecting to different gateways etc.. - that is a decision customer can choose based on the geo-proximity of
+connecting to a different gateway, etc.. - that is a decision customer can choose based on the geo-proximity of
 the gateways to the data centers. 
 
 Say customer chooses to connect the connector to gatewayA and customer's user agent directs the user traffic to
