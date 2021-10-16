@@ -124,11 +124,17 @@ create the attributes involved -
 * App attributes - a set of attributes that apply to all applications. Values will vary from application to application and play a role in access control and routing.
 * AppGroup attributes - a set of attributes that apply to all AppGroups. Values will vary from one AppGroup ID to another and play a role in access-control to a connector, and thereby, to a datacenter.
 
-Out of these, the user attributes are mandatory. The other attributes may or not be created at this time.
-If the number of applications is very small, the App attribute creation can be avoided depending on
-if and how the Route policy is written. Similarly, if the number of AppGroups is very small, the AppGroup
-attribute creation can be avoided depending on if and how the Access policy is written. More details on 
-this in a later section on policies and attributes.
+Out of these, the user attributes are mandatory. The other attributes are available depending on the
+operational mode selected. Nextensio provides two modes - an 'Easy' mode and an 'Expert' mode. By default,
+every new customer starts in the 'Easy' mode. In the
+'Easy' mode, user attributes are the only attributes that need to be defined and maintained. The other
+attributes are not available. Mode selection can be changed via the "Settings" option in the left-hand
+panel.
+* In the 'Easy' mode, policies are created by defining and maintaining rules in an easy assisted way.
+* In the 'Expert' mode, the App and AppGroup attributes can be defined and maintained. This mode also
+disables the 'Easy' mode rules and allows policies to be directly edited and maintained.
+
+More details on this in a later section on policies and attributes.
 
 The AppGroups created above have application URLs appx.awesomecustomer.com and appy.awesomecustomer.com as members. 
 Let's say for example that App-X and App-Y in DCA are to be used only by engineering team, while App-X
@@ -156,9 +162,9 @@ The full capabilities will be explained in more detail in section [Policies and 
 This step is optional. By default, all user traffic is permitted without any routing support.
 Note that multiple instances of a service are still possible even without routing - the instances
 will be selected based on round-robin load-balancing.
-
-For bootstrapping, we can skip this step. The types of policies and their full capabilities will be
-explained in a later section.
+Also, the default 'Easy' mode does not require dealing directly with policies. Instead, policies are
+created via higher level rules. We will therefore skip this step. The types of policies and their full capabilities
+will be explained in a later section.
 
 
 ### STEP6: Run connectors in data centers

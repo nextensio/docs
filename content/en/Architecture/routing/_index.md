@@ -90,7 +90,7 @@ Also note that we now have TWO AppGroup IDs defined - AppGroup-aws@awesomecustom
 AppGroup-do@awesomecustomer.com (or AppGroup-DCA@awesomecustomer.com and AppGroup-DCB@awesomecustomer.com
 as mentioned earlier).
 The former will be used to connect from amazon DC to nextensio gateways, and the latter to connect from
-digital ocean DC. In each of these AppGroup IDs, the service (application) URLs are prefixed by "aws" or "do"
+digital ocean DC. In each of these AppGroup IDs, the application URL is prefixed by "aws" or "do".
 
 So this is how we can logically think of how routing happens
 
@@ -107,7 +107,8 @@ a specific AppGroup ID that needs to be chosen for this traffic - we DO NOT expe
 with those tag added URLs. Customer will just host appx.awesomecustomer.com in BOTH amazon and digital ocean
 
 The exact details of how step2 does the "attribute match" is defined using policies as described in the
-section on [Policies](/architecture/attrpolicy.html)
+section on [Policies](/architecture/attrpolicy.html). In the 'Easy' mode, the policy is created by defining
+rules for each App. In the 'Expert' mode, the policy can be written and edited directly.
 
 ## Next 
 
