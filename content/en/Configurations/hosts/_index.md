@@ -1,7 +1,7 @@
 
 ---
-title: "Hosts"
-linkTitle: "Hosts"
+title: "Apps"
+linkTitle: "Apps"
 weight: 20
 type: list
 menu:
@@ -11,53 +11,53 @@ menu:
 
 Aug 5, 2021
 
-## Host information
+## App information
 
-Hosts are the entities that users try to access. They represent the services deployed inside data
-centers. Hosts are grouped together, generally based on similar security requirements, and
+Apps are the entities that users try to access. They represent the services deployed inside data
+centers. Apps are grouped together, generally based on similar security requirements, and
 configured as services for one or more AppGroup ID (aka connector).
 
-Every host is expected to have a valid URL in the tenant's domain, eg., appx.awesomecustomer.com
-and appy@awesomecustomer.com. A descriptive name can also be entered for the host.
-The rest of the configuration per host involves attributes. Host attributes are used for routing based
-on a Route policy by providing the host attributes file as reference data for matching with user
+Every app is expected to have a valid URL in the tenant's domain, eg., appx.awesomecustomer.com
+and appy@awesomecustomer.com. A descriptive name can also be entered for the app.
+The rest of the configuration per app involves attributes. App attributes are used for routing based
+on a Route policy by providing the app attributes file as reference data for matching with user
 attributes. Nextensio does routing by providing a way to differentiate multiple instances of the
-same host/service. The differentiation is done by prefixing a "route tag" to each host ID. So if the
+same app/service. The differentiation is done by prefixing a "route tag" to each app ID. So if the
 service appx.awesomecustomer.com is to be deployed in AWS and GCP and differentiated for routing
 control, the route tag "aws" can be used for AWS and "gcp" for GCP to yield aws.appx.awesomecustomer.com
-and gcp.appx.awesomecustomer.com. The host attributes configuration would then create two routes
-called "aws" and "gcp" and configure attributes per route. So host attributes are actually configured
-per host route.
+and gcp.appx.awesomecustomer.com. The app attributes configuration would then create two routes
+called "aws" and "gcp" and configure attributes per route. So app attributes are actually configured
+per app route.
 
-As mentioned earlier, it is also possible to perform access control per host, and this is achieved
+As mentioned earlier, it is also possible to perform access control per app, and this is achieved
 by having a special route called "deny". This route represents a blackhole and is never configured
 as a service in any AppGroup ID. If the Route policy evaluates to "deny", the user flow is dropped.
-* When there is no routing or host access control for any host, the Route policy should evaluate to ""
+* When there is no routing or app access control for any app, the Route policy should evaluate to ""
 (a null string) by default.
-* When there is only host access control, the Route policy should evaluate to "deny" or "".
+* When there is only app access control, the Route policy should evaluate to "deny" or "".
 * When there is just routing, the Route policy should evaluate to some route tag (depending on the
-host) or to "" (as a catch-all in case there is no match). There should therefore be at least one
+app) or to "" (as a catch-all in case there is no match). There should therefore be at least one
 instance of the service without any route prefix configured on at least one AppGroup ID.
-* When there is routing and host access control for one or multiple hosts in any combination, the
+* When there is routing and app access control for one or multiple apps in any combination, the
 Route policy should evaluate to a route tag, or to "deny" or to "". If the Route policy can evaluate
 to "", there must be at least one instance of the service without any route prefix configured on at
 least one AppGroup ID.
 
 Currently, a tenant has to identify the superset of attributes that may be required for all possible
-hosts requiring routing or access control. However, only a subset of the attributes may be relevant
-for any specific host. We will go through some scenarios in detail below.
+apps requiring routing or access control. However, only a subset of the attributes may be relevant
+for any specific app. We will go through some scenarios in detail below.
 
-Host attributes are required only if they are to be used as reference data to a Route policy. Host
+App attributes are required only if they are to be used as reference data to a Route policy. App
 attributes can also be configured and maintained simply to provide a record for reference.
-Host entries (just ID and name) are currently used to identify the URL domains of the tenant and
+App entries (just ID and name) are currently used to identify the URL domains of the tenant and
 hence are mandatory.
 
 Through this configuration editor, the following operations can be done:
-* add a new host with or without routes
-* delete a host with or without routes
-* add new host route(s) with attribute match values to an existing host
-* delete host route(s)
-* change any attribute value(s) for any host route(s)
+* add a new app with or without routes
+* delete a app with or without routes
+* add new app route(s) with attribute match values to an existing app
+* delete app route(s)
+* change any attribute value(s) for any app route(s)
 
 All the operations above should be safe, ie., they should not cause a conflict in a Route policy.
 Conflict here means reference to an attribute that does not exist or whose type is different from
@@ -79,22 +79,22 @@ Conflicts of this type can happen whenever the attributes used for the different
 "aws" and "gcp" in our case) do not have at least one common single-value user attribute with unique
 match values specified per route.
 
-A golden rule for host route attributes is to therefore use at least one common single-value user attribute
-for matching all routes for a host (including any "deny" route) using unique attribute values for each
+A golden rule for app route attributes is to therefore use at least one common single-value user attribute
+for matching all routes for a app (including any "deny" route) using unique attribute values for each
 route. This ensures no user will match multiple routes. This common single-value user attribute does
-not have to be the same for all hosts, just for the routes within a host. Once this is done to ensure there
+not have to be the same for all apps, just for the routes within a app. Once this is done to ensure there
 cannot be multiple route matches, it does not matter which other user attributes are used with what
 sort of values (unique or overlapping) for further matching to fine-tune the selection per route.
 
-However, when attribute values are specified for matching different attributes per host, the policy
-needs to handle default values. If the number of hosts requiring routing is small, the policy can be
-written such that the rules are separate per host. This can help avoid the checks for default values
-as each rule can be customized for the attributes to be matched for each host's routes.
+However, when attribute values are specified for matching different attributes per app, the policy
+needs to handle default values. If the number of apps requiring routing is small, the policy can be
+written such that the rules are separate per app. This can help avoid the checks for default values
+as each rule can be customized for the attributes to be matched for each app's routes.
 
 Let's go through some examples to cover the above as well as some other considerations.
 
 ```
-Host = appx.awesomecustomr.com
+App = appx.awesomecustomr.com
 Attribute	Route="aws"	  Route="gcp"		Route="deny"
 ---------------------------------------------------------------------------
 typeAllowed	"employee"	  "contractor"		"vendor", "partner"
@@ -107,9 +107,9 @@ that. A user cannot have more than one relationship type with the tenant (either
 contractor, vendor, or partner), and each route specifies a different value to match.
 Checking for user role (or any other attributes) is therefore for fine-tuning the selection.
 
-Now let's consider the case where route attributes for our host have been specified as shown below:
+Now let's consider the case where route attributes for our app have been specified as shown below:
 
-Host = appx.awesomecustomr.com
+App = appx.awesomecustomr.com
 Attribute	Route="aws"	  Route="gcp"		Route="deny"
 --------------------------------------------------------------------------
 typeAllowed	"employee"	  "employee"		"vendor", "partner"
@@ -117,7 +117,7 @@ teamAllowed	-		  "sales"		-
 roleAllowed	-		  -			-
 location	"california"	  -			-
 
-Host = appy@awesomecustomr.com
+App = appy@awesomecustomr.com
 Attribute	Route="aws"	  Route="gcp"		Route="deny"
 --------------------------------------------------------------------------
 typeAllowed	"employee"	  "employee"		"vendor", "partner"
@@ -214,11 +214,11 @@ The above examples show that when an attribute is selected for matching a route,
 specified for all routes present. Also, these match values need to be unique for at least one attribute
 (to ensure there is no conflict in matching).
 
-In all the examples above, the rules were written to be host independent. So what happens if the
-attributes to match vary from host to host ? It is similar to the case where different attributes are
-selected per route for any given host.
+In all the examples above, the rules were written to be app independent. So what happens if the
+attributes to match vary from app to app ? It is similar to the case where different attributes are
+selected per route for any given app.
 
-If the number of hosts is small, a simpler solution may be to have separate rules per host/service.
+If the number of apps is small, a simpler solution may be to have separate rules per app/service.
 For eg., assume we use typeAllowed and teamAllowed for appx.awesomecustomer.com, and typeAllowed and
 location for appy@awesomecustomer.com (we'll drop the "deny" route for now).
 
@@ -244,7 +244,7 @@ route_tag = appyPrefix {
 }
 ```
 
-An alternate way to achieve the above without hardcoding host names would be to write the policy rules
+An alternate way to achieve the above without hardcoding app names would be to write the policy rules
 as follows :
 
 ```
@@ -265,11 +265,11 @@ route_tag = appxPrefix {
       appyPrefix := allhosts[host].routes[tagindex].prefix
 }
 ```
-However, as the number of hosts requiring routing and/or host access control gets large, the above method
+However, as the number of apps requiring routing and/or app access control gets large, the above method
 can get cumbersome and will become unmanageable beyond a certain point. The only way around is to write
 a compact, generalized policy using reference data. But we've seen above that writing a generalized policy
-requires matching the same set of attributes for every host. But different hosts may require different
-criteria. If we are selective with the attributes chosen per host, then a generalized policy fails
+requires matching the same set of attributes for every app. But different apps may require different
+criteria. If we are selective with the attributes chosen per app, then a generalized policy fails
 unless default values for unused attributes are not considered. However, considering default values for
 unused attributes is non-trivial. The way around this is to convert unused attributes into "dont-cares"
 and that can be done by setting the attribute match criteria to have all possible values that a matching
@@ -283,25 +283,25 @@ user attribute can have. Let's take an example to illustrate this:
   vendor
   partner
 ```
-So whereas a user would have one of the attributes shown in the left column, a host route
+So whereas a user would have one of the attributes shown in the left column, a app route
 that does not care about the value of this attribute can set the match criteria to all the values
 shown in the right column for its roleSelect attribute. roleSelect would be defined as array
 type. This will allow matching any user unlike a default value which will not match any user.
 
 Where a user attribute has a small number of possible values, all these possible values should
-be defined as the match criteria for the corresponding host route attribute that is a "don't-care".
+be defined as the match criteria for the corresponding app route attribute that is a "don't-care".
 Of course one needs to keep track of the addition of any new value to the user attribute and reflect
-that addition in the host route attribute value as well.
+that addition in the app route attribute value as well.
 
 If a user attribute has a large number of possible values, the above task may get difficult.
-In such a case, the customer can consider grouping hosts based on attribute groups where the
+In such a case, the customer can consider grouping apps based on attribute groups where the
 attribute groups are separated based on attributes with a large set of possible values. The
 common elements in each group would be the attributes with a small set of possible values.
 The policy rules can then be separated out for each attribute group but still written in a
 generalized way to keep the policy compact.
 
 Unless a change is very urgent (say the change is required to address a security issue related to
-host access-control), it is recommended that changes be batched together and done once or twice a day
+app access-control), it is recommended that changes be batched together and done once or twice a day
 for better controls and validations. Of course this is just a suggestion and it is up to the tenant
 to decide what works best for them.
 
@@ -309,20 +309,20 @@ For addition of new attributes, deleting an attribute, or changing the name or t
 refer to the [Attribute Editor section](../configurations/attributeeditor.html)
 
 
-Host definition             
+App definition             
 :-------------------------:
 ![](/configurations/hosts/host_add.jpg)
 
-* Host: is a valid URL for the host
+* App: is a valid URL for the app
 
 * Name: A descriptive name
 
 
-Host routing config
+App routing config
 :-------------------------:
 ![](/configurations/hosts/host_routes.jpg)
 
-The example above shows a host defined with two routes - "aws" and "do", and each route has
+The example above shows a app defined with two routes - "aws" and "do", and each route has
 a separate set of attributes. A route tag or prefix is just any string. For details on how its used in
 routing, refer above or [routing](/architecture/routing.html)
 

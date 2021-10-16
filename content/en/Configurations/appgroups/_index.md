@@ -46,7 +46,7 @@ Let us see what are the configuration parameters of an app group.
 ### AppGroup information
 
 AppGroups are the connectors that provide access into a data center. They represent a group of
-services or applications inside a data center. The grouping of services for an AppGroup ID is generally
+services or applications inside a data center. The grouping of apps for an AppGroup ID is generally
 based at least on similar security requirements so that an access control policy can be applied at the
 connector level. Further sub-grouping can always be done based on things like bandwidth and/or latency
 requirements.
@@ -137,7 +137,9 @@ AppGroup Configuration
 :-------------------------:
 ![](/configurations/appgroups/appgroup_add.jpg)
 
-* AppGroup ID: This is just an email id that will uniquely identify and authenticate an appgroup
+* AppGroup ID: This is just an email id that will uniquely identify and authenticate an appgroup, 
+note that this does NOT have to be a valid email, it just needs to be in an email id format as
+of today.
 
 * AppGroup Name: Name is just any descriptive string
 
@@ -146,7 +148,7 @@ based on how much bandwidth intensive the app is. Based on the application's sca
 requirements, we can tune the number of compute units allocated in the Nextensio Gateways
 for handling traffic for this AppGroup ID.
 
-* Services: All modern applications are HTTP based and identified with URLs. For example if 
+* Apps: All modern applications are HTTP based and identified with URLs. For example if 
 customer awesomecustomer has an AppGroup which has two applications, the Point of Sales
 and usermanuals, identified by pos.awesomecustomer.com and manuals.awesomecustomer.com.
 So we will enter pos.awesomecustomer.com,manuals.awesomecustomer.com. Basically, the URLs 

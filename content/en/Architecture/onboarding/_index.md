@@ -182,7 +182,7 @@ future sections
 
 The connector image can be downloaded from the Images page. Every connector connects to one nextensio gateway. The
 connector is a linux binary that can be run independently or packaged as a docker container
-or inside a kubernetes cluster etc., - however customer chooses.
+or inside a kubernetes cluster etc., - however customer chooses. 
 
 Connector Image             
 :-------------------------:
@@ -215,6 +215,16 @@ If the file containing the authentication key is in the default location, run
 
 If the file with the authentication key is in a different location, run
 * "./connector -key \<key file location\> -gateway \<gateway name\>"
+
+NOTE:
+
+1. The above steps assume that the "connector" binary is stored in some directory of customers choice (it can be anywhere,
+no specific requirement), and that customer is in that directory when typing "./connector" in the commands above
+
+2. The connector can run as a normal user, it does NOT need root privileges
+
+3. The connector logs are printed onto the console, it can be redirected/saved into a log location of customer's choice,
+or it can just be left to log into the console
 
 #### Gateway details
 
