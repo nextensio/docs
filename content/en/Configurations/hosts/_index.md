@@ -1,4 +1,3 @@
-
 ---
 title: "Apps"
 linkTitle: "Apps"
@@ -19,45 +18,49 @@ configured as services for one or more AppGroup ID (aka connector).
 
 Every app is expected to have a valid URL in the tenant's domain, eg., appx.awesomecustomer.com
 and appy@awesomecustomer.com. A descriptive name can also be entered for the app.
-The rest of the configuration per app involves attributes. App attributes are used for routing based
-on a Route policy by providing the app attributes file as reference data for matching with user
-attributes. Nextensio does routing by providing a way to differentiate multiple instances of the
-same app/service. The differentiation is done by prefixing a "route tag" to each app ID. So if the
-service appx.awesomecustomer.com is to be deployed in AWS and GCP and differentiated for routing
-control, the route tag "aws" can be used for AWS and "gcp" for GCP to yield aws.appx.awesomecustomer.com
-and gcp.appx.awesomecustomer.com. The app attributes configuration would then create two routes
-called "aws" and "gcp" and configure attributes per route. So app attributes are actually configured
-per app route.
+The rest of the configuration per app involves attributes. In the 'Expert' mode, app attributes
+are used for routing based on a Route policy by providing the app attributes file as reference data
+for matching with user attributes. Nextensio does routing by providing a way to differentiate multiple
+instances of the same app/service. The differentiation is done by prefixing a "route tag" to each
+app ID. So if the application appx.awesomecustomer.com is to be deployed in AWS and GCP and differentiated
+for routing control, the route tag "aws" can be used for AWS and "gcp" for GCP to yield
+aws.appx.awesomecustomer.com and gcp.appx.awesomecustomer.com. The app attributes configuration would
+then create two routes called "aws" and "gcp" and configure attributes per route. So app attributes are
+actually configured per app route so that match criteria can be set per route.
 
 As mentioned earlier, it is also possible to perform access control per app, and this is achieved
 by having a special route called "deny". This route represents a blackhole and is never configured
 as a service in any AppGroup ID. If the Route policy evaluates to "deny", the user flow is dropped.
-* When there is no routing or app access control for any app, the Route policy should evaluate to ""
-(a null string) by default.
-* When there is only app access control, the Route policy should evaluate to "deny" or "".
-* When there is just routing, the Route policy should evaluate to some route tag (depending on the
-app) or to "" (as a catch-all in case there is no match). There should therefore be at least one
-instance of the service without any route prefix configured on at least one AppGroup ID.
-* When there is routing and app access control for one or multiple apps in any combination, the
-Route policy should evaluate to a route tag, or to "deny" or to "". If the Route policy can evaluate
-to "", there must be at least one instance of the service without any route prefix configured on at
-least one AppGroup ID.
 
+In the 'Easy' mode, one has to define/create the routes (including the "deny" route) and then define
+rules per route.  App attributes are not required/used in this mode.
+
+* When there is no routing or access control for any app, the Route policy should evaluate to ""
+(a null string) by default. No 'Easy' mode rule is required in this case.
+* When there is only access control, the Route policy should evaluate to "deny" or "". In the 'Easy'
+mode, rules need to be defined for the "deny" route.
+* When there is just routing, the Route policy should evaluate to some route tag (depending on the
+app) or to "" (as a catch-all in case there is no match). There should ideally be at least one
+instance of the application without any route prefix configured on at least one AppGroup ID. In the
+'Easy' mode, rules are required per route defined.
+* When there is routing and access control for one or multiple apps in any combination, the
+Route policy should evaluate to a route tag, or to "deny" or to "". If the Route policy can evaluate
+to "", there must be at least one instance of the application without any route prefix configured on at
+least one AppGroup ID. In the 'Easy' mode, rules are required per route including the "deny" route.
+
+App entries (just ID and name) are currently used to identify the URL domains of the tenant and
+hence are mandatory. App attributes are required only if they are to be used as reference data to a
+Route policy. 
 Currently, a tenant has to identify the superset of attributes that may be required for all possible
 apps requiring routing or access control. However, only a subset of the attributes may be relevant
 for any specific app. We will go through some scenarios in detail below.
 
-App attributes are required only if they are to be used as reference data to a Route policy. App
-attributes can also be configured and maintained simply to provide a record for reference.
-App entries (just ID and name) are currently used to identify the URL domains of the tenant and
-hence are mandatory.
-
 Through this configuration editor, the following operations can be done:
 * add a new app with or without routes
-* delete a app with or without routes
-* add new app route(s) with attribute match values to an existing app
+* delete an app with or without routes
+* add new app route(s) with attribute match values to an existing app - ('Expert' mode only)
 * delete app route(s)
-* change any attribute value(s) for any app route(s)
+* change any attribute value(s) for any app route(s) - ('Expert' mode only)
 
 All the operations above should be safe, ie., they should not cause a conflict in a Route policy.
 Conflict here means reference to an attribute that does not exist or whose type is different from
@@ -74,24 +77,29 @@ above, if the policy rule(s) end up matching the specified attributes for both "
 same time, the policy engine cannot decide the result. If there is a possibility of multiple matches,
 the policy has to be written such that the rules provide a precedence or priority. This can be done
 via the else facility - "if rule1, tag = "aws", else if rule2, tag = "gcp"".
+This applies to either mode, the 'Easy' mode or the 'Expert' mode.
 
 Conflicts of this type can happen whenever the attributes used for the different route tags (prefixes
 "aws" and "gcp" in our case) do not have at least one common single-value user attribute with unique
 match values specified per route.
 
 A golden rule for app route attributes is to therefore use at least one common single-value user attribute
-for matching all routes for a app (including any "deny" route) using unique attribute values for each
+for matching all routes for an app (including any "deny" route) using unique attribute values for each
 route. This ensures no user will match multiple routes. This common single-value user attribute does
-not have to be the same for all apps, just for the routes within a app. Once this is done to ensure there
+not have to be the same for all apps, just for the routes within an app. Once this is done to ensure there
 cannot be multiple route matches, it does not matter which other user attributes are used with what
 sort of values (unique or overlapping) for further matching to fine-tune the selection per route.
+Again, this applies whether defining rules for policy generation in the 'Easy' mode or writing a policy
+directly in the 'Expert' mode.
 
 However, when attribute values are specified for matching different attributes per app, the policy
 needs to handle default values. If the number of apps requiring routing is small, the policy can be
 written such that the rules are separate per app. This can help avoid the checks for default values
-as each rule can be customized for the attributes to be matched for each app's routes.
+as each rule can be customized for the attributes to be matched for each app's routes. This caution
+applies when writing policies in the 'Expert' mode.
 
-Let's go through some examples to cover the above as well as some other considerations.
+Let's go through some examples to cover the above as well as some other considerations. Those choosing
+to use the 'Easy' mode can skip these examples.
 
 ```
 App = appx.awesomecustomr.com
@@ -136,13 +144,13 @@ routes "gcp" and "deny". Such a rule is shown below.
 ```
 default route_tag = "gcp"
 route_tag = prefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.team == allhosts[host].routes[tagindex].teamAllowed
-      user.location == allhosts[host].routes[tagindex].location
-      prefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.team == data.hosts[app].routeattrs[route].teamAllowed
+      input.user.location == data.hosts[app].routeattrs[route].location
+      prefix := data.hosts[app].routeattrs[route].prefix
 }
 ```
 
@@ -155,29 +163,29 @@ will match routes "aws" and "gcp", giving a conflict.
 ```
 default route_tag = "gcp"
 route_tag = awsPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.team == allhosts[host].routes[tagindex].teamAllowed
-      awsPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.team == data.hosts[app].routeattrs[route].teamAllowed
+      awsPrefix := data.hosts[app].routeattrs[route].prefix
 }
 route_tag = gcpPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.location == allhosts[host].routes[tagindex].location
-      gcpPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.location == data.hosts[app].routeattrs[route].location
+      gcpPrefix := data.hosts[app].routeattrs[route].prefix
 }
 route_tag = denyPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      allhosts[host].routes[tagindex].teamAllowed == ""
-      allhosts[host].routes[tagindex].location == ""
-      denyPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      data.hosts[app].routeattrs[route].teamAllowed == ""
+      data.hosts[app].routeattrs[route].location == ""
+      denyPrefix := data.hosts[app].routeattrs[route].prefix
 }
 ```
 
@@ -188,25 +196,25 @@ based in california accessing appx.awesomecustomer.com will always match the "gc
 ```
 default route_tag = "gcp"
 route_tag = awsPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.team == allhosts[host].routes[tagindex].teamAllowed
-      awsPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.team == data.hosts[app].routeattrs[route].teamAllowed
+      awsPrefix := data.hosts[app].routeattrs[route].prefix
 } else = gcpPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.location == allhosts[host].routes[tagindex].location
-      gcpPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.location == data.hosts[app].routeattrs[route].location
+      gcpPrefix := data.hosts[app].routeattrs[route].prefix
 } else = denyPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      denyPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      denyPrefix := data.hosts[app].routeattrs[route].prefix
 }
 ```
 
@@ -225,22 +233,22 @@ location for appy@awesomecustomer.com (we'll drop the "deny" route for now).
 ```
 default route_tag = "gcp"
 route_tag = appxPrefix {
-      some host
-      some tagindex
-      allhosts[host].serviceName == "appx.awesomecustomer.com"
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.team == allhosts[host].routes[tagindex].teamAllowed
-      appxPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      data.hosts[app].routeattrs[route].serviceName == "appx.awesomecustomer.com"
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.team == data.hosts[app].routeattrs[route].teamAllowed
+      appxPrefix := data.hosts[app].routeattrs[route].prefix
 }
 route_tag = appyPrefix {
-      some host
-      some tagindex
-      allhosts[host].serviceName == "appy.awesomecustomer.com"
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.location == allhosts[host].routes[tagindex].location
-      appyPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      data.hosts[app].routeattrs[route].serviceName == "appy.awesomecustomer.com"
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.location == data.hosts[app].routeattrs[route].location
+      appyPrefix := data.hosts[app].routeattrs[route].prefix
 }
 ```
 
@@ -250,22 +258,22 @@ as follows :
 ```
 default route_tag = "gcp"
 route_tag = appxPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.team == allhosts[host].routes[tagindex].teamAllowed
-      appxPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.team == data.hosts[app].routeattrs[route].teamAllowed
+      appxPrefix := data.hosts[app].routeattrs[route].prefix
 } else = appyPrefix {
-      some host
-      some tagindex
-      user.service == allhosts[host].serviceName
-      user.relationshipType == allhosts[host].routes[tagindex].typeAllowed
-      user.location == allhosts[host].routes[tagindex].location
-      appyPrefix := allhosts[host].routes[tagindex].prefix
+      some app
+      some route
+      input.user.service == data.hosts[app].routeattrs[route].serviceName
+      input.user.relationshipType == data.hosts[app].routeattrs[route].typeAllowed
+      input.user.location == data.hosts[app].routeattrs[route].location
+      appyPrefix := data.hosts[app].routeattrs[route].prefix
 }
 ```
-However, as the number of apps requiring routing and/or app access control gets large, the above method
+However, as the number of apps requiring routing and/or access control gets large, the above method
 can get cumbersome and will become unmanageable beyond a certain point. The only way around is to write
 a compact, generalized policy using reference data. But we've seen above that writing a generalized policy
 requires matching the same set of attributes for every app. But different apps may require different
@@ -283,7 +291,7 @@ user attribute can have. Let's take an example to illustrate this:
   vendor
   partner
 ```
-So whereas a user would have one of the attributes shown in the left column, a app route
+So whereas a user would have one of the attributes shown in the left column, an app route
 that does not care about the value of this attribute can set the match criteria to all the values
 shown in the right column for its roleSelect attribute. roleSelect would be defined as array
 type. This will allow matching any user unlike a default value which will not match any user.
@@ -313,16 +321,16 @@ App definition
 :-------------------------:
 ![](/configurations/hosts/host_add.jpg)
 
-* App: is a valid URL for the app
+* App: is a valid URL for the application
 
-* Name: A descriptive name
+* Name: A descriptive name for the application
 
 
 App routing config
 :-------------------------:
 ![](/configurations/hosts/host_routes.jpg)
 
-The example above shows a app defined with two routes - "aws" and "do", and each route has
+The example above shows an app defined with two routes - "aws" and "do", and each route has
 a separate set of attributes. A route tag or prefix is just any string. For details on how its used in
 routing, refer above or [routing](/architecture/routing.html)
 
