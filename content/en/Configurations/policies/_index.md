@@ -23,11 +23,12 @@ are evaluated. All expressions within a rule are logically ANDed together. Separ
 together. If a rule evaluates to true, it can set a variable (also called document) to a value it
 desires to indicate the evaluation result.
 
-Nextensio has three types of policies:
+Nextensio has four types of policies:
 * a policy for access control per connector (or AppGroup ID) - Access Policy
 * a policy for routing to multiple differentiated instances of a service and/or for access control per
 service - Route Policy
 * a policy for tracing user traffic flows - Trace Policy
+* a policy for specifying user attributes to be used as dimentions for metrics - Stats policy
 
 Each policy takes a user ID's attributes as input. These attributes are referred to using the
 "input.user." prefix to each user attribute name. For eg., if there is a single-value user
@@ -47,16 +48,17 @@ using the index to refer to the attribute values, eg.,
 }
 ```
 
-Besides user attributes, each type of policy takes more inputs:
+Besides user attributes, a policy can take more inputs:
 * the Access policy takes the target AppGroup ID as a mandatory input and a file containing all AppGroup ID
 attribute records as optional reference data
-* the Route policy takes the target host ID (aka service) as a mandatory input and a file containing all
-host attribute records as optional reference data
+* the Route policy takes the target App ID (aka service) as a mandatory input and a file containing all
+app attribute records as optional reference data
 * the Trace policy takes a file containing trace request records as optional reference data. Each
 trace request record specifies one or more user attribute values to match.
+* the Stats policy takes no other inputs
 
 The Appgroup ID fed as input to the Access policy is referred to using input.bid (short for bundle ID).
-The host ID fed as input to the Route policy is referred to using input.host.
+The App ID fed as input to the Route policy is referred to using input.host.
 
 Attributes in a reference data file are referred to using the "data." prefix. The first thing to
 keep in mind is that a reference data file is a collection or array of records.
@@ -67,17 +69,26 @@ There are two strategies for writing any policy:
 * write the policy using hardcoded values so as to not use the reference data file
 * write the policy in a generalized form to take values to be matched from a reference data file
 
-When the number of hosts (services) is small, the first strategy can be employed for the Route policy.
+When the number of apps (services) is small, the first strategy can be employed for the Route policy.
 When the number of AppGroup IDs is small, the first strategy can be adopted for the Access policy.
 When the number of trace requests is small, the first strategy can be adopted for the Trace policy.
 
-However, as the number of hosts or AppGroup IDs or trace requests goes up substantially, maintaining
-a policy with separate rules having hardcoded values per host or AppGroup ID or trace request can get
+However, as the number of apps or AppGroup IDs or trace requests goes up substantially, maintaining
+a policy with separate rules having hardcoded values per app or AppGroup ID or trace request can get
 cumbersome. It becomes desirable to collapse the policy into a small set of generalized rules that
 instead rely on a reference data file. Writing policy rules to use attributes from a reference data
 file has to be done with thought and care, as the generalized policy needs to consider the diverse
-requirements of different hosts or connectors. Refer to other sections in this chapter for some of
+requirements of different apps or AppGroups. Refer to other sections in this chapter for some of
 the factors to be considered for each type of policy based on its associated reference data file.
+
+Nextensio therefore provides the 'Easy' mode for the first strategy and the 'Expert' mode for the
+second strategy. In the 'Easy' mode, users write high level rules through a rules editor and generate
+the policy from the rules. The rules can be edited at any time to regenerate the associated policy.
+Policies cannot be edited in this mode to ensure a policy and its rules don't go out of sync.
+The 'Expert' mode disables the rules editor and instead allows writing and editing policies directly.
+In this mode, the App and Appgroup attributes are also available, giving users more flexibility and
+power to use the full capabilities of OPA's Rego.
+
 
 ### Summary of policy types
 
@@ -85,8 +96,9 @@ the factors to be considered for each type of policy based on its associated ref
 Type		Input				  Reference data*
 ----------------------------------------------------------------------
 Access Policy	user attributes + AppGroup ID	  AppGroup ID file
-Route Policy	user attributes + host ID  	  Host attributes file
+Route Policy	user attributes + App ID  	  App attributes file
 Trace Policy	user attributes	       		  Trace requests file
+Stats Policy    user attributes			  -
 ```
 Note: * indicates optional
 
@@ -94,8 +106,8 @@ Note: * indicates optional
 ### Policy changes
 
 A policy can be changed in multiple ways:
-* to add a new rule (for a new host or AppGroup ID or trace request)
-* to remove a rule (for a host or AppGroup ID or trace request)
+* to add a new rule (for a new app or AppGroup ID or trace request)
+* to remove a rule (for an app or AppGroup ID or trace request)
 * to change the match criteria in any rule
 * to enhance the match criteria in any rule
 * to prune the match criteria in any rule
@@ -103,7 +115,7 @@ A policy can be changed in multiple ways:
 
 All policy changes have to be done with extreme care and the logic validated before deploying the
 policy changes.
-Policy changes may be driven by attribute changes for users, hosts, or AppGroups. In such a case
+Policy changes may be driven by attribute changes for users, apps, or AppGroups. In such a case
 the policy changes should always be sequenced to avoid failures due to attribute references that
 are not valid (attribute does not exist or is of the wrong type).
 * When new attributes are being introduced or attribute types are being changed, the attribute
@@ -185,9 +197,9 @@ data.bundles[i].<attribute-name> : An attribute in an AppGroup ID record in the 
 ### Route Policy
 
 ```
-    User attributes                          Host
+    User attributes                          App
          +    ---->   Route Policy <----  attributes
-      host ID                                file
+      App ID                                 file
       (always)                            (optional)
 ```
 
@@ -200,25 +212,25 @@ default route_tag = ""
 The package statement (first one) is a declaration of this policy to OPA.
 The second statement represents the result returned after the policy is evaluated and is initialized
 to a default value of "" (null string). As covered earlier, the policy rule(s) can also evaluate to
-set route_tag = "deny" in order to block any user's access to a specific host.
+set route_tag = "deny" in order to block any user's access to a specific app.
 
 The result returned by the policy is accessed at user.routing.route_tag
 
-As covered earlier in 'Policy overview', the user attributes and host ID received as input are
+As covered earlier in 'Policy overview', the user attributes and app ID received as input are
 referred to using input.user.\<attribute-name\> and input.host.
-So how does one access the host attribute values from the reference data file ?
-The host attributes file is an array of records for multiple host IDs. However, each host ID can have
-an array of records for host route attributes. So we basically have an array of records within an array
+So how does one access the app attribute values from the reference data file ?
+The app attributes file is an array of records for multiple app IDs. However, each app ID can have
+an array of records for app route attributes. So we basically have an array of records within an array
 of records.
-To refer to the i'th record which corresponds to some host ID, one needs to use data.hosts[i].
-The host ID in that i'th record can then be accessed via data.hosts[i].host.
+To refer to the i'th record which corresponds to some app ID, one needs to use data.hosts[i].
+The app ID in that i'th record can then be accessed via data.hosts[i].host.
 
-The route attributes for that host ID are referred to via data.hosts[i].routeattrs[j].<attribute name>
-for the j'th record that corresponds to some route tag for that host ID.
+The route attributes for that app ID are referred to via data.hosts[i].routeattrs[j].<attribute name>
+for the j'th record that corresponds to some route tag for that app ID.
 
-So if there is a single-value host route attribute called roleSelect, it would be referenced via
+So if there is a single-value app route attribute called roleSelect, it would be referenced via
 data.hosts[i].routeattrs[j].roleSelect.
-If there is a multi-value host route attribute called teamSelect, it would be referenced via
+If there is a multi-value app route attribute called teamSelect, it would be referenced via
 data.hosts[i].routeattrs[j].teamSelect\[\_\] to refer to any of the possible values.
 
 Rules can then be written as follows where \<rule expressions\> match input attributes to constant
@@ -235,7 +247,7 @@ route_tag = tag2 {  # Rule2
 ...
 ```
 route_tag will be set to tag1 or tag2 or ... depending on which rule evaluates to true. The tag value can
-also be taken from the matching host route attributes record in the reference data via
+also be taken from the matching app route attributes record in the reference data via
 data.hosts[i].routeattrs[j].tag.
 Multiple rules should not evaluate to true as that leads to a conflict for OPA. A workaround to prevent
 that is to use the "else" facility:
@@ -259,10 +271,10 @@ to match every value in userTeam to any value in teamSelect.
 ##### Key things to remember
 ```
 route_tag : where result of policy should be returned
-input.host : Target host ID for user
+input.host : Target app ID for user
 input.user.<attribute-name> : User attribute
-data.hosts[i].host : Host ID from a record in the reference data
-data.hosts[i].routeattrs[j].<attribute-name> : An attribute in a host ID route attributes record in the reference data
+data.hosts[i].host : App ID from a record in the reference data
+data.hosts[i].routeattrs[j].<attribute-name> : An attribute in a app ID route attributes record in the reference data
 ```
 
 ### Trace Policy
@@ -275,18 +287,21 @@ data.hosts[i].routeattrs[j].<attribute-name> : An attribute in a host ID route a
 A Trace policy needs to start with these two statements and should not be changed:
 ```
 package user.tracing
-default request = "no"
+default request = {"no": [""]}
 ```
 
 The package statement (first one) is a declaration of this policy to OPA.
-The second statement represents the result returned after the policy is evaluated and is initialized
-to a default value of "no". To deny a trace request, either "no" or "none" can be returned.
+The second statement represents the result returned after the policy is evaluated and is a JSON
+string with a key-value pair. The default key is "no" (or can also be "none") with its value set
+to an array with a null (or empty) string. "no" or "none" indicate that the flow should not be traced,
+and hence the associated value is a null string as user attributes are not relevant.
 The trace policy is executed for every new user flow.
 
 The result returned by the policy is accessed at user.tracing.request. If tracing is to be enabled
-for a flow, it can be any string that is interpreted as an ID for the trace request. This string is
-inserted in the trace spans as a "nxt-trace-requestid: \<request\>" tag so that trace spans can
-be identified back to a specific trace request.
+for a flow, then the key in the key-value pair can be any string that is interpreted as an ID for the
+trace request. This string is inserted in the trace spans as a "nxt-trace-requestid: \<request\>" tag
+so that trace spans can be identified back to a specific trace request.
+The value is an array of user attribute names that should be included as tags in the trace spans.
 
 As covered earlier in 'Policy overview', the user attributes received as input are referred to using
 input.user.\<attribute-name\>.
@@ -306,11 +321,11 @@ values or values for attributes obtained from the reference data file. For eg.,
 ```
 request = req1 {  # Rule1
     <rule expressions>
-    req1 := <some trace request id>
+    req1 := {"<some trace request id>": ["attr1", "attr2", attr3", ...]}
 }
 request = req2 {  # Rule2
     <rule expressions>
-    req2 := <some other trace request id>
+    req2 := {"<some other trace request id>": ["attr1", "attr2", "attr3", ...]}
 }
 ...
 ```
@@ -326,13 +341,50 @@ to match the userRole value to any value in roleTraced, or
     input.user.userTeam[_] == data.tracerequests[i].teamTraced[_]
 to match every value in userTeam to any value in teamTraced.
 ```
+
 ##### Key things to remember
 ```
-request : where result of policy should be returned
+request : where result of policy should be returned as a JSON string in one of these forms
+          {"no": [""]}
+          {"TraceReqID": ["attr1", attr2, "attr3"]}
 input.user.<attribute-name> : User attribute
 data.tracerequests[i].traceid : Trace request ID from a record in the reference data
 data.tracerequests[i].<attribute-name> : An attribute in a trace request record in the reference data
 ```
+
+### Stats Policy
+
+```
+    User attributes ----> Stats Policy
+       (always)
+```
+
+A Stats policy is the simplest of the four. It needs to start with this statement and should not be changed:
+```
+package user.stats
+default attributes = {}
+```
+
+The package statement (first one) is a declaration of this policy to OPA.
+The second statement represents the result returned by the policy as the object "attributes". The value
+of attributes is a JSON string that contains a key-value pair where the key can be "include" or "exclude"
+and the value is an array of one or more user attributes. If the key is "include", the values indicate the
+user attributes to be included. If the key value is "exclude", the values indicate the user attributes
+that should not be included, meaning all user attributes not excluded will be used as dimensions for the
+metrics. Note that the scope of user attributes includes the user device attributes provided by Nextensio
+in addition to all user defined attributes.
+The stats policy is executed for every new user flow.
+
+The result returned by the policy is accessed at user.stats.attributes. 
+
+Here is an example of how to set attributes:
+
+default attributes = {"include": ["_osType", "_osMajor", "location"]}
+
+or
+
+default attributes = {"exclude": ["_hostname", "_model", "_osMinor", "_osPatch"]}
+
 
 ### Policy Configuration
 :-------------------------:
@@ -346,12 +398,5 @@ For an overview of the Access policy, refer to [access control](/architecture/ac
 Policy configuration provides a text editor to edit any of the three policies. Care must be taken to
 ensure that changes that impact the logic of a policy are validated first (how is TBD).
 
-TODO ASHWIN: Give some more details here as you feel appropriate. Also, now that I think of it, access 
-policies for different appgroups might be different right ? Each appgroup is a completely differen beast
-of its own with its own attributes and stuff. So we will have one big merged set of attributes for all
-app groups, which might be ok, but do we want to have one big humongous policy describing access 
-stuff for different app groups ? How is that even done - how do we say "if appgroup == X use this
-part of the policy, else use that part of the policy" etc.. Do we see this evolving to have 
-AcessPolicy per appGroup and similarly RoutePolicy per host ?
 
 

@@ -51,14 +51,16 @@ based at least on similar security requirements so that an access control policy
 connector level. Further sub-grouping can always be done based on things like bandwidth and/or latency
 requirements.
 
-Every AppGroup is expected to have an email id in the tenant's domain, eg., appx@awesomecustomer.com
-for the tenant awesomecustomer.com.
+Every AppGroup is expected to have an id in email id format in the tenant's domain, eg., appx@awesomecustomer.com
+for the tenant awesomecustomer.com. Note that this id does not have to be a valid email id.
 As additional information about the AppGroup, a descriptive name also needs to be provided. There may be
 additional informational fields provided in future for urgent contact information of the admin, etc.
 
 The rest of the configuration per AppGroup ID involves attributes. AppGroup ID attributes are used
 for access control based on an Access policy by providing the AppGroup attributes file as reference
-data for matching with user attributes.
+data for matching with user attributes. This requires writing and maintaining the Access policy directly
+and is only possible in the 'Expert' mode. AppGroup attributes are not available in the 'Easy' mode.
+Those chosing to use the 'Easy' mode can therefore jump ahead to the 'AppGroup Configuration' section.
 
 Currently, a tenant has to identify the superset of attributes that may be required for all possible
 AppGroups requiring access control. However, only a subset of the attributes may be relevant
@@ -106,9 +108,6 @@ common elements in each group would be the attributes with a small set of possib
 The policy rules can then be separated out for each attribute group but still written in a
 generalized way to keep the policy compact.
 
-AppGroup attributes are required only if they are to be used as reference data to an Access policy.
-Appgroup attributes can also be configured and maintained simply to provide a record for reference.
-
 Through this configuration editor, the following operations can be done:
 * add a new AppGroup ID and attribute values
 * delete an AppGroup ID
@@ -152,7 +151,7 @@ for handling traffic for this AppGroup ID.
 customer awesomecustomer has an AppGroup which has two applications, the Point of Sales
 and usermanuals, identified by pos.awesomecustomer.com and manuals.awesomecustomer.com.
 So we will enter pos.awesomecustomer.com,manuals.awesomecustomer.com. Basically, the URLs 
-identify the applications in this AppGroup ID.
+identify the applications in this AppGroup ID. The Apps can be selected through a drop-down list.
 
 For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
 and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 

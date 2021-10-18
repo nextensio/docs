@@ -32,6 +32,17 @@ team/department/business-unit (these can be separate), user's default/typical wo
 so on. It is entirely up to the tenant to define and name the attributes and select the type of each
 attribute.
 
+Nextensio also provides a fixed set of user attributes per user device. These attributes provide info
+about user device name, device o/s type, and device o/s verion. Names of these attributes start with an
+underscore ('_') character and can be used in policies. These attributes are:
+* _hostname
+* _osType
+* _osName
+* _osMajor
+* _osMinor
+* _osPatch
+* _model
+
 User attributes are mandatory and they form the basic input to any policy, whether for routing,
 access control, or tracing. Through this configuration editor, the following operations can be done:
 * add a new user

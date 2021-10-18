@@ -13,10 +13,10 @@ Aug 5, 2021
 
 ## Attributes
 
-Note: "AppGroup ID" and connector will be used interchangeably as they represent the same entity.
+Note: "AppGroup ID" and connector may be used interchangeably as they represent the same entity.
 
 Attributes are a way to associate meta data with some entity. In nextensio, those entities are users,
-hosts, and connectors. These attributes are defined, maintained and used by the customer and do not
+apps, and AppGroups. These attributes are defined, maintained and used by the customer and do not
 impact nextensio in any way. For eg., nextensio does not need to change any software when a new attribute
 is defined or used. The definition and use of attributes is totally within the customer's domain. Of
 course attributes need to be defined with thought and care, esp when it comes to their type and purpose.
@@ -24,7 +24,7 @@ The cost of changing or deleting attributes can become cumbersome depending on t
 those attributes or how they are used in the policies.
 
 The attribute editor is an innovative component of the nextensio controller UX that lets a customer
-define the attributes required for users, hosts, and connectors. Through the editor, the customer defines
+define the attributes required for users, apps, and AppGroups. Through the editor, the customer defines
 * name of the attribute
 * type of the attribute
 * where it is applicable
@@ -32,7 +32,7 @@ define the attributes required for users, hosts, and connectors. Through the edi
 Note that the values are NOT defined here.
 
 As soon as the attribute is defined (added), it is also added to all the existing records for the attributes
-file where it is applicable (user, host or AppGroup) with default values. 
+file where it is applicable (user, App or AppGroup) with default values. 
 
 User attributes are mandatory as they are the basic mandatory input to any policy. Most user attributes
 will have a single value, ie., they will not be array types. However, there can be some attributes that
@@ -40,14 +40,14 @@ can have multiple values. For eg., whereas an employee who is an individual cont
 part of a single team or department, an employee at the management level will likely be part of multiple
 teams or departments based on their span of control. This is important, because the type chosen should
 be the least-common-denominator. So if an attribute can be an array type for even one user, it needs to
-be an array type for all users. This is true even for host or AppGroup attributes. Defining an attribute
+be an array type for all users. This is true even for app or AppGroup attributes. Defining an attribute
 type as an array does not mean it must have multiple values - the attribute can still have a single or even
 a null value (for eg., "" is the null value for a string). 
 
-As covered in earlier sections under Architecture, host and connector attributes are optional, depending
-on how the policies are written, ie., whether they need reference data. Host and connector attributes
-can also be created and maintained even if the policies do not use them (in case a customer wants to be
-prepared for changing their policy strategy later or simply as a record for reference).
+As covered in earlier sections under Architecture, app and AppGroup attributes are optional, used only in the
+'Expert' mode where polices can be written to use the attribute files as reference data. These attributes are
+not available in the 'Easy' mode, which is the default mode.
+
 
 
 Attribute Editor
@@ -74,16 +74,16 @@ Note that attribute values are not changed via the editor, nor is changing attri
 unlike changing attribute names or types.
 
 Many or most attribute changes will originate at the user level and require corresponding
-attribute changes in the host attributes and/or AppGroup attributes. In this case, the corresponding
-attribute defined for the host and/or AppGroup may not be the same type. In many cases, whereas
+attribute changes in the app attributes and/or AppGroup attributes. In this case, the corresponding
+attribute defined for the app and/or AppGroup may not be the same type. In many cases, whereas
 a user attribute may be a single value attribute, it may be desirable to define an array type
-attribute for the host or AppGroup attributes to allow matching against multiple values. This can be
+attribute for the app or AppGroup attributes to allow matching against multiple values. This can be
 leveraged in the policies if using the attributes file as reference data because Rego provides an easy
 way to match any value in an array of values. If the policy were to use the other strategy of using
 hard coded values for matching, checking for a match with multiple values makes the policy more complex
 as rules have to be replicated.
 
-There may of course be situations where an attribute is added to just the host and/or AppGroup
+There may of course be situations where an attribute is added to just the app and/or AppGroup
 attributes.
 
 A general rule of thumb when using policies is that
@@ -100,7 +100,7 @@ attribute should be the absolute last task in this process.
 
 The first task, of course, is to define the new attribute via the editor. As soon as the new attribute
 is added, it will be propagated to all records in the attribute files where it is applicable (user,
-host, AppGroup). The new attribute will have a default value assigned, based on the type, as shown
+App, AppGroup). The new attribute will have a default value assigned, based on the type, as shown
 below:
 
 * integer - 0
