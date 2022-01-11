@@ -85,8 +85,9 @@ in the data center and assigning them to a connector. Its upto the customer to d
 together but apps grouped together should have similar security requirements. An AppGroup is mapped to a
 Connector, hence this step basically defines the Connectors.
 
-An AppGroup is also created in controller.nextensio.net with just another username (in email id format)
-and password ! Customer also specifies the URLs for the applications that are members of the AppGroup.
+An AppGroup is also created in controller.nextensio.net with just another username (in email id format but
+does not need to be a valid email ID) and password ! Customer also specifies the URLs for the applications
+that are members of the AppGroup.
 For example, if the customer domain is awesomecustomer.com, App-X might have the URL appx.awesomecustomer.com
 and App-Y might be appy.awesomecustomer.com.
 
@@ -97,7 +98,7 @@ Add AppGroup
 For initial bootstrapping, the comment about "You have no attributes for AppGroup" can be ignored. It will be 
 covered in step 4 below and also explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
 
-* The AppGroup ID is an email id. 
+* The AppGroup ID is any unique ID in an email format (does not have to be a valid email ID).
 * The AppGroup Name is just a descriptive string
 * The AppGroup Compute Pods (default 1). This represents the number of connectors per AppGroup ID. There can be multiple connectors for scale (load balancing) and/or redundancy. The default value of one connector is a good start!
 * Services: in our example, customer will enter the application URLs appx.awesomecustomer.com, appy.awesomecustomer.com

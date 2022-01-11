@@ -51,7 +51,7 @@ based at least on similar security requirements so that an access control policy
 connector level. Further sub-grouping can always be done based on things like bandwidth and/or latency
 requirements.
 
-Every AppGroup is expected to have an id in email id format in the tenant's domain, eg., appx@awesomecustomer.com
+Every AppGroup is expected to have an email id format in the tenant's domain, eg., appx@awesomecustomer.com
 for the tenant awesomecustomer.com. Note that this id does not have to be a valid email id.
 As additional information about the AppGroup, a descriptive name also needs to be provided. There may be
 additional informational fields provided in future for urgent contact information of the admin, etc.
@@ -136,8 +136,8 @@ AppGroup Configuration
 :-------------------------:
 ![](/configurations/appgroups/appgroup_add.jpg)
 
-* AppGroup ID: This is just an email id that will uniquely identify and authenticate an appgroup, 
-note that this does NOT have to be a valid email, it just needs to be in an email id format as
+* AppGroup ID: This is just in an email id format that will uniquely identify and authenticate an appgroup.
+Note that it does NOT have to be a valid email id, it just needs to be in an email id format as
 of today.
 
 * AppGroup Name: Name is just any descriptive string
