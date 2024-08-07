@@ -134,7 +134,7 @@ refer to the [Attribute Editor section](../configurations/attributeeditor.html)
 
 AppGroup Configuration             
 :-------------------------:
-![](/configurations/appgroups/appgroup_add.jpg)
+![](/docs/configurations/appgroups/appgroup_add.jpg)
 
 * AppGroup ID: This is just in an email id format that will uniquely identify and authenticate an appgroup.
 Note that it does NOT have to be a valid email id, it just needs to be in an email id format as
@@ -153,5 +153,5 @@ and usermanuals, identified by pos.awesomecustomer.com and manuals.awesomecustom
 So we will enter pos.awesomecustomer.com,manuals.awesomecustomer.com. Basically, the URLs 
 identify the applications in this AppGroup ID. The Apps can be selected through a drop-down list.
 
-For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
-and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 
+For attributes, please refer to the [overview on policy and attributes](/docs/architecture/policyattr.html) 
+and [access control](/docs/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 
