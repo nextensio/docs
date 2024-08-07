@@ -63,7 +63,7 @@ refer to the [Attribute Editor section](../configurations/attributeeditor.html)
 
 Add user             
 :-------------------------:
-![](/configurations/users/user_add.jpg) 
+![](/docs/configurations/users/user_add.jpg) 
 
 * User ID: A unique email id of the user
 
@@ -73,5 +73,5 @@ NOTE: In the next update, Nextensio will start supporting federation with
 customer's Identity Provider / LDAP and at that point the list of users can be
 exported from customer's Identity Provider instead of manually configuring here
 
-For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
-and [access control](/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 
+For attributes, please refer to the [overview on policy and attributes](/docs/architecture/policyattr.html) 
+and [access control](/docs/architecture/accesscontrol.html) details about [configuring attribute editor](../configurations/attributeeditor.html) 

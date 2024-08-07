@@ -319,7 +319,7 @@ refer to the [Attribute Editor section](../configurations/attributeeditor.html)
 
 App definition             
 :-------------------------:
-![](/configurations/hosts/host_add.jpg)
+![](/docs/configurations/hosts/host_add.jpg)
 
 * App: is a valid URL for the application
 
@@ -328,11 +328,11 @@ App definition
 
 App routing config
 :-------------------------:
-![](/configurations/hosts/host_routes.jpg)
+![](/docs/configurations/hosts/host_routes.jpg)
 
 The example above shows an app defined with two routes - "aws" and "do", and each route has
 a separate set of attributes. A route tag or prefix is just any string. For details on how its used in
-routing, refer above or [routing](/architecture/routing.html)
+routing, refer above or [routing](/docs/architecture/routing.html)
 
-For attributes, please refer to the [overview on policy and attributes](/architecture/policyattr.html) 
+For attributes, please refer to the [overview on policy and attributes](/docs/architecture/policyattr.html) 
 and details about [configuring attribute editor](../configurations/attributeeditor.html) 

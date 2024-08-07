@@ -8,7 +8,7 @@ description: >
 ## Introduction 
 
 Policies play an important role in Nextensio. Lets look at some sample use cases, continuing with
-the awesomecustomer.com App-X and App-Y examples from the [Architecture](/architecture.html) section.
+the awesomecustomer.com App-X and App-Y examples from the [Architecture](/docs/architecture.html) section.
 Once we run through the sample use cases, we will have a fair idea of what attributes and 
 policies are and how to use them. 
 
@@ -267,7 +267,7 @@ if no value is entered).
 
 Attribute Editor             
 :-------------------------:
-![](/architecture/policyattr/attredit.jpg)
+![](/docs/architecture/policyattr/attredit.jpg)
 
 The above picture shows the attribute editor populated with the attributes we discussed above, with
 the corresponding types (string, number). We do not have any example attribute that is multi-value (array),
@@ -282,20 +282,20 @@ The attribute editor cannot ensure correctness of data.
 ### App Attributes
 
 We show below  adding the attributes required for the AWS/Digital ocean example for application
-appx.awesomecustomer.com. This section also needs an understanding of the [Routing](/architecture/routing.html)
+appx.awesomecustomer.com. This section also needs an understanding of the [Routing](/docs/architecture/routing.html)
 section to get a complete picture
 
 Add App             
 :-------------------------:
-![](/architecture/policyattr/host_add.jpg)
+![](/docs/architecture/policyattr/host_add.jpg)
 
 Edit App             
 :-------------------------:
-![](/architecture/policyattr/host_edit.jpg)
+![](/docs/architecture/policyattr/host_edit.jpg)
 
 Add attributes for tags             
 :-------------------------:
-![](/architecture/policyattr/hostattr_edit.jpg)
+![](/docs/architecture/policyattr/hostattr_edit.jpg)
 
 Similarly we can add the second tag "do" with attribute employmentType set to "consultant"
 
@@ -303,7 +303,7 @@ Similarly we can add the second tag "do" with attribute employmentType set to "c
 
 Add/Modify attributes             
 :-------------------------:
-![](/architecture/policyattr/userattr_edit.jpg)
+![](/docs/architecture/policyattr/userattr_edit.jpg)
 
 The picture shows the attributes we discussed in the examples above, added to the "admin" user
 
@@ -311,7 +311,7 @@ The picture shows the attributes we discussed in the examples above, added to th
 
 Add/Modify attributes             
 :-------------------------:
-![](/architecture/policyattr/appattr_edit.jpg)
+![](/docs/architecture/policyattr/appattr_edit.jpg)
 
 The picture shows the attributes we discussed in the examples above, added to the "appxappy" appgroup
 
@@ -331,7 +331,7 @@ will be able to migrate to the 'Expert' mode to develop more complex and powerfu
 In 'Expert' mode, the policies are configured as shown below. Some templates to aid in writing policies are
 also shown.
 
-![](/architecture/policyattr/policy.jpg)
+![](/docs/architecture/policyattr/policy.jpg)
 
 There are separate policies, each used in a different context. Each policy has a name. The picture above
 shows two policies - AccessPolicy and RoutePolicy. AccessPolicy is what controls all the "restrict appx/appy
@@ -952,4 +952,4 @@ route_tag = rtag {
 ## Next 
 
 Having understood attributes and policies, let us see how they are used in making routing decisions specifically -
-[Routing](/architecture/routing.html)
+[Routing](/docs/architecture/routing.html)

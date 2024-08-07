@@ -29,7 +29,7 @@ url to derive the actual instance. The multiple instances of an application (or 
 therefore differentiated via a prefix tag and these tagged application names are the ones configured
 as the services for the associated AppGroup ID (aka connector).
 
-In the section on [Policies and Attributes](/architecture/policyattr.html), we talked
+In the section on [Policies and Attributes](/docs/architecture/policyattr.html), we talked
 about an example application appx.awesomecustomer.com present in two different data centers DCA and
 DCB, hosted in AWS and Digital Ocean, and we talked about how we can use attributes to
 route users to one or the other data center using attribute match. We left out a
@@ -50,7 +50,7 @@ configuration as below.
 
 App Group Config             |  App config
 :-------------------------:|:-------------------------:
-![](/architecture/routing/appgroup_config.jpg) | ![](/architecture/routing/host_config.jpg)
+![](/docs/architecture/routing/appgroup_config.jpg) | ![](/docs/architecture/routing/host_config.jpg)
 
 
 appx.awesomecustomer.com is defined in the single AppGroup ID "appxappy@awesomecustomer.com"
@@ -81,7 +81,7 @@ configure the service.
 
  App Group Config             |  App config
 :-------------------------:|:-------------------------:
-![](/architecture/routing/appgroup_differ_config.jpg) | ![](/architecture/routing/host_differ_config.jpg)
+![](/docs/architecture/routing/appgroup_differ_config.jpg) | ![](/docs/architecture/routing/host_differ_config.jpg)
 
 Note that under the App config, we have defined two "tags" - one "aws" (indicating amazon) and another "do"
 (indicating digital ocean). 
@@ -107,10 +107,10 @@ a specific AppGroup ID that needs to be chosen for this traffic - we DO NOT expe
 with those tag added URLs. Customer will just host appx.awesomecustomer.com in BOTH amazon and digital ocean
 
 The exact details of how step2 does the "attribute match" is defined using policies as described in the
-section on [Policies](/architecture/attrpolicy.html). In the 'Easy' mode, the policy is created by defining
+section on [Policies](/docs/configurations/policies.html). In the 'Easy' mode, the policy is created by defining
 rules for each App. In the 'Expert' mode, the policy can be written and edited directly.
 
 ## Next 
 
 The next topic of interest will be how to control which user can access what resources, in 
-section [Access Control](/architecture/accesscontrol.html)
+section [Access Control](/docs/architecture/accesscontrol.html)

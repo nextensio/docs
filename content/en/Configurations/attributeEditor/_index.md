@@ -52,9 +52,9 @@ not available in the 'Easy' mode, which is the default mode.
 
 Attribute Editor
 :-------------------------:
-![](/configurations/attributeEditor/attredit.jpg)
+![](/docs/configurations/attributeEditor/attredit.jpg)
 
-The purpose of attributes and where they are used etc. is also documented [here](/architecture/policyattr.html)
+The purpose of attributes and where they are used etc. is also documented [here](/docs/architecture/policyattr.html)
 
 ### Handling attribute changes
 

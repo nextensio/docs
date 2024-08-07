@@ -30,7 +30,7 @@ with BGP configurations over some dedicated circuits OR using ipsec tunnels into
 head end in AWS and GCP and then running BGP over those tunnels. And of course the user is 
 provided the IP address of the backend in either AWS or GCP via DNS.
 
-![](/overview/traditional.jpg)
+![](/docs/overview/traditional.jpg)
 
 IT admins who maintain such topologies are well aware of how non trivial it is to set up
 and maintain/troubleshoot these classic networing technologies. They often get into 
@@ -64,7 +64,7 @@ The question nextensio asks is "do we need to do the translations" ? The answer 
 need to do the translations - the traditional/current models do it because there is nothing 
 better out there! 
 
-![](/overview/nextensio.jpg)
+![](/docs/overview/nextensio.jpg)
 
 Now suddenly the cloud gateway is not dealing with routing IP addresses any more, its dealing
 with connecting services. So we have a database of services and users trying to reach backends
@@ -80,6 +80,6 @@ the service based actions is nothing but a regular kubernetes service mesh - tha
 does anyways, service routing! While that is a reasonable first impression, that is far from
 an accurate picture. What we do is far more than kubernetes or any http mesh technology out
 there can do. For example, we can have programmable/dynamic policies using Rego language. 
-To find out more, read our [Architecture](/architecture/onboarding.html) section
+To find out more, read our [Architecture](/docs/architecture/onboarding.html) section
 
 

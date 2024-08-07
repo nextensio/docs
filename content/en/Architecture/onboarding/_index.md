@@ -9,7 +9,7 @@ description: >
 
 The below picture gives a high level overview of nextensio architecture
 
-![](/architecture/onboarding/architecture.jpg)
+![](/docs/architecture/onboarding/architecture.jpg)
 
 The picture shows 
 
@@ -56,7 +56,7 @@ can be modified later by the customer.
 
 Front page             |  Signup Page
 :-------------------------:|:-------------------------:
-![](/architecture/onboarding/signup_1.jpg) | ![](/architecture/onboarding/signup_2.jpg)
+![](/docs/architecture/onboarding/signup_1.jpg) | ![](/docs/architecture/onboarding/signup_2.jpg)
 
 ### STEP2: Create users
 
@@ -68,11 +68,11 @@ nearest / geo-proximal gateway.
 
 Add user             |  Download user agent image
 :-------------------------:|:-------------------------:
-![](/architecture/onboarding/user_add.jpg) | ![](/architecture/onboarding/images.jpg)
+![](/docs/architecture/onboarding/user_add.jpg) | ![](/docs/architecture/onboarding/images.jpg)
 
 For initial bootstrapping, the comment about "You have no attributes for users" can be ignored. 
 It is covered below in step 4 and also explained in more detail in section
-[Policies and Attributes](/architecture/policyattr.html).
+[Policies and Attributes](/docs/architecture/policyattr.html).
 Also note that the first admin user who signed up will automatically show up in the users list.
 
 NOTE: Nextensio will soon support federation with customer's Identity Provider and then the user creation
@@ -93,10 +93,10 @@ and App-Y might be appy.awesomecustomer.com.
 
 Add AppGroup             
 :-------------------------:
-![](/architecture/onboarding/appgroup_add.jpg)
+![](/docs/architecture/onboarding/appgroup_add.jpg)
 
 For initial bootstrapping, the comment about "You have no attributes for AppGroup" can be ignored. It will be 
-covered in step 4 below and also explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
+covered in step 4 below and also explained in more detail in section [Policies and Attributes](/docs/architecture/policyattr.html)
 
 * The AppGroup ID is any unique ID in an email format (does not have to be a valid email ID).
 * The AppGroup Name is just a descriptive string
@@ -151,12 +151,12 @@ know what the attributes are - they are defined and created exclusively by custo
 
 Add Apps
 :-------------------------:
-![](/architecture/onboarding/host_add.jpg)
+![](/docs/architecture/onboarding/host_add.jpg)
 
 So in the above page, we would add TWO applications - appx.awesomecustomer.com and appy.awesomecustomer.com.
 The attributes can be left alone for now since adding the applications is sufficient for bootstrapping.
 We can similarly skip the AppGroup attributes for bootstrapping.
-The full capabilities will be explained in more detail in section [Policies and Attributes](/architecture/policyattr.html)
+The full capabilities will be explained in more detail in section [Policies and Attributes](/docs/architecture/policyattr.html)
 
 ### STEP5: Define and create policies
 
@@ -187,7 +187,7 @@ or inside a kubernetes cluster etc., - however customer chooses.
 
 Connector Image             
 :-------------------------:
-![](/architecture/onboarding/images.jpg)
+![](/docs/architecture/onboarding/images.jpg)
 
 
 
@@ -198,8 +198,8 @@ Before launching a connector, the customer needs to do two things :
 
 Connector Authentication Key
 :-------------------------:
-![](/architecture/onboarding/connector_key.jpg)
-![](/architecture/onboarding/connector_key_copy.jpg)
+![](/docs/architecture/onboarding/connector_key.jpg)
+![](/docs/architecture/onboarding/connector_key_copy.jpg)
 
 
 On the AppGroup configuration page, pick the AppGroup ID for which the connector needs to be launched and click on the
@@ -231,7 +231,7 @@ or it can just be left to log into the console
 
 Gateway Configuration page             |  List of available gateways
 :-------------------------:|:-------------------------:
-![](/architecture/onboarding/gateway_config.png) | ![](/architecture/onboarding/gateway_list.jpg)
+![](/docs/architecture/onboarding/gateway_config.png) | ![](/docs/architecture/onboarding/gateway_list.jpg)
 
 * image: Nextensio is a fully managed solution. Nextensio takes care of upgrading the gateways. This
 gives an option to specify a different image. We recommend not to change the value here. 
@@ -275,4 +275,4 @@ there are no external ripple effects
 ## Next 
 
 Having got an introduction to what Nextensio does, let us see all the flexible policies that Nextensio
-provides a customer - [Policies and Attributes](/architecture/policyattr.html)
+provides a customer - [Policies and Attributes](/docs/architecture/policyattr.html)

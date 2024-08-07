@@ -40,8 +40,8 @@ Access control via the Access Policy at the Appgroup ID level is done as given b
 
 1. When a user logs into a nextensio gateway, nextensio gets all the "attributes" of that user
 2. When that user tries to access a service appx.awesomecustomer.com, we first do a route lookup
-as described [here](/architecture/routing.html). After route lookup, we figure out the "AppGroup ID"
+as described [here](/docs/architecture/routing.html). After route lookup, we figure out the "AppGroup ID"
 (connector) to be used to carry this traffic
-3. Nextensio then executes the access policy configured in the [policy section](/configurations/policies.html)
+3. Nextensio then executes the access policy configured in the [policy section](/docs/configurations/policies.html)
 to match these user attributes with values specified directly in the policy or by looking up the AppGroup ID's
 attributes to return a true (allowed) or false (denied) value.

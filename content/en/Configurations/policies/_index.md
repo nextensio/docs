@@ -388,12 +388,12 @@ default attributes = {"exclude": ["_hostname", "_model", "_osMinor", "_osPatch"]
 
 ### Policy Configuration
 :-------------------------:
-![](/configurations/policies/policy.jpg)
+![](/docs/configurations/policies/policy.jpg)
 
 Nextensio policies are written in [Rego Language](https://www.openpolicyagent.org/docs/latest/policy-language/)
 
-For an overview of the Route policy, refer to [routing](/architecture/routing.html).
-For an overview of the Access policy, refer to [access control](/architecture/accescontrol.html)
+For an overview of the Route policy, refer to [routing](/docs/architecture/routing.html).
+For an overview of the Access policy, refer to [access control](/docs/architecture/accescontrol.html)
 
 Policy configuration provides a text editor to edit any of the three policies. Care must be taken to
 ensure that changes that impact the logic of a policy are validated first (how is TBD).
